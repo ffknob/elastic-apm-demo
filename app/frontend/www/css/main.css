@@ -1,0 +1,9 @@
+header,
+section,
+footer {
+    padding:10px;
+}
+
+section {
+    height: 100%;
+}

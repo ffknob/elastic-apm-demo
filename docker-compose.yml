@@ -39,7 +39,7 @@ services:
       args:
         - ELASTIC_VERSION=$ELASTIC_VERSION
     volumes:
-      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ./elastic/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
       - apm-demo-elasticsearch_data:/usr/share/elasticsearch/data
     environment:
       ES_JAVA_OPTS: "-Xmx1g -Xms1g"
@@ -54,7 +54,7 @@ services:
       args:
         - ELASTIC_VERSION=$ELASTIC_VERSION
     volumes:
-      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+      - ./elastic/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
     ports:
       - "5601:5601"
     networks:
@@ -71,7 +71,7 @@ services:
       args:
         - ELASTIC_VERSION=$ELASTIC_VERSION
     volumes:
-      - ./apm-server/config/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro
+      - ./elastic/apm-server/config/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro
     networks:
       - backend
     depends_on:

@@ -1,20 +1,64 @@
-let simulationId = 1;
+const SIMULATION_TYPES = {
+    SUCCESS: {
+        type: 'success',
+        text: 'Success',
+        class: 'is-success'
+    },
+    ERROR: {
+        type: 'error',
+        text: 'Error',
+        class: 'is-warning'
+    },
+    EXCEPTION: {
+        type: 'exception',
+        text: 'Exception',
+        class: 'is-danger'
+    }
+};
+
+let simulationId = 0;
 let simulations$ = new rxjs.Subject();
 
-function createSimulation(event) {
+function selectSimulationType(event) {
+    let simulationType = null;
+
+    switch (event.srcElement.id) {
+        case 'btn-success':
+            simulationType = SIMULATION_TYPES.SUCCESS;
+            break;
+
+        case 'btn-error':
+            simulationType = SIMULATION_TYPES.ERROR;
+            break;
+
+        case 'btn-exception':
+            simulationType = SIMULATION_TYPES.EXCEPTION;
+            break;
+    }
+
+    return simulationType;
+}
+
+function createSimulation(simulationType) {
     const numberOfRequests = document.querySelector('#select-number-of-requests').value;
     const maxRandomDelay = document.querySelector('#input-max-random-delay').value;
     
     simulationId += 1;
     const simulation = {
         id: simulationId,
-        type: 'success',
+        type: simulationType,
         options: {
             numberOfRequests: numberOfRequests,
             maxRandomDelay: maxRandomDelay
         },
         requests: {
             total: numberOfRequests,
+            time: {
+                start: null,
+                stop: null,
+                took: 0,
+                took$: new rxjs.Subject()
+            },
             sent: 0,
             sent$: new rxjs.Subject(),
             completed: 0,
@@ -30,6 +74,15 @@ function createSimulation(event) {
     return simulation;
 }
 
+function createTypeTag(simulationType) {
+    let tag = document.createElement('span');
+    tag.classList.add('tag');
+    tag.classList.add(simulationType.class);
+    tag.innerText = simulationType.text;
+
+    return tag;
+}
+
 function createRequestsTableRow(simulation) {
     const requestsTableBodyOld = document.querySelector('#table-requests tbody');
     const requestsTableBodyNew = document.createElement('tbody');
@@ -41,22 +94,26 @@ function createRequestsTableRow(simulation) {
     const requestCellNumberOfRequests = document.createElement('td');
     const requestCellSent = document.createElement('td');
     const requestCellCompleted = document.createElement('td');
-
+    const requestCellTook = document.createElement('td');
+console.log(createTypeTag(simulation.type));
     requestCellId.innerHTML = simulation.id;
-    requestCellType.innerHTML = simulation.type;
+    requestCellType.appendChild(createTypeTag(simulation.type));
     requestCellRandomDelay.innerHTML = simulation.options.maxRandomDelay;
     requestCellNumberOfRequests.innerHTML = simulation.requests.total;
     requestCellSent.innerHTML = simulation.requests.sent;
     simulation.requests.sent$.subscribe((sent) => requestCellSent.innerHTML = sent);
     requestCellCompleted.innerHTML = simulation.requests.completed;
     simulation.requests.completed$.subscribe((completed) => requestCellCompleted.innerHTML = completed);
+    requestCellTook.innerHTML = simulation.requests.took;
+    simulation.requests.time.took$.subscribe((took) => requestCellTook.innerHTML = took);
 
     requestRow.appendChild(requestCellId);
     requestRow.appendChild(requestCellType);
-    requestRow.appendChild(requestCellNumberOfRequests);
     requestRow.appendChild(requestCellRandomDelay);
+    requestRow.appendChild(requestCellNumberOfRequests);
     requestRow.appendChild(requestCellSent);
     requestRow.appendChild(requestCellCompleted);
+    requestRow.appendChild(requestCellTook);
 
     requestsTableBodyNew.appendChild(requestRow)
     if (requestsTableRows.length > 0) {
@@ -72,6 +129,7 @@ function makeRequest(simulation) {
     const requestObservable = rxjs.timer(randomDelay);
 
     simulation.requests.randomDelay = randomDelay;
+    simulation.requests.time.start = Date.now();
     simulation.requests.sent += 1;
     simulation.requests.sent$.next(simulation.requests.sent);
 
@@ -91,6 +149,10 @@ function treatResponse(simulation) {
     srcElement.innerText = `${simulation.requests.completed}/${simulation.requests.total}`;
 
     if (simulation.requests.completed == simulation.requests.total) {
+        simulation.requests.time.stop = Date.now();
+        simulation.requests.time.took = simulation.requests.time.stop - simulation.requests.time.start;
+        simulation.requests.time.took$.next(simulation.requests.time.took);
+
         srcElement.disabled = false;
         srcElement.innerText = simulation.srcElement.innerText;
     }
@@ -110,7 +172,8 @@ function endSimulation(simulation) {
 }
 
 function simulate(event) {
-    const simulation = createSimulation(event);
+    const simulationType = selectSimulationType(event);
+    const simulation = createSimulation(simulationType);
 
     createRequestsTableRow(simulation);
 
@@ -123,19 +186,19 @@ rxjs.fromEvent(document.querySelector('#form-request'), 'submit')
         err => console.log(err)
     );
 
-rxjs.fromEvent(document.querySelector('#btn-successes'), 'click')
+rxjs.fromEvent(document.querySelector('#btn-success'), 'click')
     .subscribe(
         event => simulate(event),
         err => console.log(err)
     );
 
-rxjs.fromEvent(document.querySelector('#btn-errors'), 'click')
+rxjs.fromEvent(document.querySelector('#btn-error'), 'click')
     .subscribe(
         event => simulate(event),
         err => console.log(err)
     );
 
-rxjs.fromEvent(document.querySelector('#btn-untreated-exceptions'), 'click')
+rxjs.fromEvent(document.querySelector('#btn-exception'), 'click')
     .subscribe(
         event => simulate(event),
         err => console.log(err)

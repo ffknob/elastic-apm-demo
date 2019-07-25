@@ -44,23 +44,6 @@
                     <div class="container">
                         <div class="box">
                             <header>
-                                <h3 class="is-size-3">Instructions</h3>
-                            </header>
-                            <section>
-                                <p>
-                                    lorem ipsum
-                                </p>
-                            </section>
-                            <footer>
-                            </footer>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="column">
-                    <div class="container">
-                        <div class="box">
-                            <header>
                                 <h3 class="is-size-3">Request simulator</h3>
                             </header>
                             <section>
@@ -104,20 +87,20 @@
                                         <label class="label">What to do?</label>
                                         <div class="field is-grouped">
                                             <div class="control">
-                                                <button id="btn-successes" name="successes" class="button is-primary">
+                                                <button id="btn-success" name="success" class="button is-primary">
                                                 Success
                                                 </button>
                                             </div>
 
                                             <div class="control">
-                                                <button id="btn-errors" name="errors" class="button is-warning">
+                                                <button id="btn-error" name="error" class="button is-warning">
                                                 Errors
                                                 </button>
                                             </div>
 
                                             <div class="control">
-                                                <button id="btn-untreated-exceptions" name="untreated-exceptions" class="button is-danger">
-                                                Untreated exceptions
+                                                <button id="btn-exception" name="exception" class="button is-danger">
+                                                Exceptions
                                                 </button>
                                             </div>
                                         </div>
@@ -130,26 +113,36 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
 
-    <section id="requests" class="section">
-        <div class="container">
-            <table id="table-requests" class="table">
-                <thead>
-                    <tr>
-                    <th><abbr title="Id">#</abbr></th>
-                    <th><abbr title="Type">Type</abbr></th>
-                    <th><abbr title="# of requests"># of requests</abbr></th>
-                    <th><abbr title="Random delay">Random delay</abbr></th>
-                    <th><abbr title="Sent">Sent</abbr></th>
-                    <th><abbr title="Completed">Completed</abbr></th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+                <div class="column">
+                    <div class="container">
+                        <div class="box">
+                            <header>
+                                <h3 class="is-size-3">Requests</h3>
+                            </header>
+                            <section>
+                                <table id="table-requests" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th><abbr title="Id">#</abbr></th>
+                                            <th><abbr title="Type">Type</abbr></th>
+                                            <th><abbr title="Random delay">Random delay</abbr></th>
+                                            <th><abbr title="Total">Total</abbr></th>
+                                            <th><abbr title="Sent">Sent</abbr></th>
+                                            <th><abbr title="Completed">Completed</abbr></th>
+                                            <th><abbr title="Took (ms)">Took (ms)</abbr></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </section>
+                            <footer>
+                            </footer>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 </body>

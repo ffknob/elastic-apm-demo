@@ -8,13 +8,14 @@
 		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
 
-
     <link rel="stylesheet" href="/css/main.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.css"/>
     
     <script src="https://unpkg.com/@reactivex/rxjs@6.5.2/dist/global/rxjs.umd.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+    <script defer src="scripts/main.js"></script>
 </head>
 
 <body>
@@ -63,48 +64,60 @@
                                 <h3 class="is-size-3">Request simulator</h3>
                             </header>
                             <section>
-                                <form>
-                                    <div class="field">
-                                        <label class="label">How many requests?</label>
-                                        <div class="control">
-                                            <div class="select">
-                                                <select>
-                                                    <option selected>1</option>
-                                                    <option>5</option>
-                                                    <option>10</option>
-                                                    <option>15</option>
-                                                    <option>50</option>
-                                                </select>
+                                <form id="form-request">
+                                    <div class="columns">
+                                        <div class="column">
+                                            <div class="field">
+                                                <label class="label">How many requests?</label>
+                                                <div class="control">
+                                                    <div class="select">
+                                                        <select id="select-number-of-requests">
+                                                            <option selected>1</option>
+                                                            <option>5</option>
+                                                            <option>10</option>
+                                                            <option>25</option>
+                                                            <option>50</option>
+                                                            <option>100</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
                                             </div>
+                                        </div>
+
+                                        <div class="column">
+                                            <div class="field">
+                                                <label class="label">Random delay (max. ms)</label>
+                                                <div class="control has-icons-left">
+                                                    <input id="input-max-random-delay" class="input" type="text" placeholder="Random delay" value="1000">
+                                                    <span class="icon is-small is-left">
+                                                        <i class="fas fa-clock"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="column">
+
                                         </div>
                                     </div>
 
                                     <div class="field">
-                                        <label class="label">Simulated delay (ms)</label>
-                                        <p class="control has-icons-left">
-                                            <input class="input" type="text" placeholder="Simulated delay" value="0">
-                                            <span class="icon is-small is-left">
-                                                <i class="fas fa-clock"></i>
-                                            </span>
-                                        </p>
-                                    </div>
-
-                                    <div class="field is-expanded">
                                         <label class="label">What to do?</label>
                                         <div class="field is-grouped">
                                             <div class="control">
-                                                <button class="button is-primary">
+                                                <button id="btn-successes" name="successes" class="button is-primary">
                                                 Success
                                                 </button>
                                             </div>
+
                                             <div class="control">
-                                                <button class="button is-warning">
-                                                Treated exception
+                                                <button id="btn-errors" name="errors" class="button is-warning">
+                                                Errors
                                                 </button>
                                             </div>
+
                                             <div class="control">
-                                                <button class="button is-danger">
-                                                Untreated exception
+                                                <button id="btn-untreated-exceptions" name="untreated-exceptions" class="button is-danger">
+                                                Untreated exceptions
                                                 </button>
                                             </div>
                                         </div>

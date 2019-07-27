@@ -1,23 +1,26 @@
-const util = require('../shared/util.js');
+const SimulationService = require('../services/simulation');
+const SimulationRequest = require('../models/simulation-request');
 
-exports.success = (req, res, next) => {
-    const delay = req.body.delay;
-    const response = { success: true };
+exports.generateSuccess = async (req, res, next) => {
+    const simulationRequest = req.locals.simulationRequest;
 
-    res.json(response);
+    await SimulationService.generateSuccess(simulationRequest);
+
+    res.send('done');
 };
 
-exports.error = (req, res, next) => {
-    const delay = req.body.delay;
-    const maxDelay = req.body.maxDelay;
-    const response = { error: true };
+exports.generateThrowError = async (req, res, next) => {
+    const simulationRequest = req.locals.simulationRequest;
 
-    setTimeout(() => res.json(response), util.randomDelay(maxDelay));
+    try {
+        await SimulationService.generateThrowError(simulationRequest);
+    } catch(err) {
+        res.status(500).send('Internal Server Error');
+    }
 };
 
-exports.exception = (req, res, next) => {
-    const delay = req.body.delay;
-    const response = { exception: true };
+exports.generateException = async (req, res, next) => {
+    const simulationRequest = req.locals.simulationRequest;
 
-    res.json(response);
+    await SimulationService.generateException(simulationRequest);
 };

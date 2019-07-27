@@ -1,3 +1,3 @@
-function randomDelay(max) {
-    return Math.floor(Math.random() * (max - 0));
+module.exports = {
+    randomDelay: (max) => Math.floor(Math.random() * (max))
 }

@@ -72,6 +72,8 @@ services:
         - ELASTIC_VERSION=$ELASTIC_VERSION
     volumes:
       - ./elastic/apm-server/config/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro
+    ports:
+        - "8200:8200"
     networks:
       - backend
     depends_on:

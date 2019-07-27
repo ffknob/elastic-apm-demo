@@ -1,3 +1,8 @@
+const MIDDLEWARE = {
+    host: 'localhost',
+    port: 3000
+};
+
 const SIMULATION_TYPES = {
     SUCCESS: {
         type: 'success',
@@ -55,7 +60,7 @@ function createSimulation(simulationType) {
             total: numberOfRequests,
             time: {
                 start: null,
-                stop: null,
+                end: null,
                 took: 0,
                 took$: new rxjs.Subject()
             },
@@ -63,6 +68,7 @@ function createSimulation(simulationType) {
             sent$: new rxjs.Subject(),
             completed: 0,
             completed$: new rxjs.Subject(),
+            requests: [],
             requests$: new rxjs.Subject()
         },
         srcElement: {
@@ -72,6 +78,18 @@ function createSimulation(simulationType) {
     };
 
     return simulation;
+}
+
+function createRequest(id) {
+    return {
+        id: id,
+        time: {
+            start: Date.now(),
+            end: null,
+            took: 0
+        },
+        response: null
+    };
 }
 
 function createTypeTag(simulationType) {
@@ -95,7 +113,7 @@ function createRequestsTableRow(simulation) {
     const requestCellSent = document.createElement('td');
     const requestCellCompleted = document.createElement('td');
     const requestCellTook = document.createElement('td');
-console.log(createTypeTag(simulation.type));
+
     requestCellId.innerHTML = simulation.id;
     requestCellType.appendChild(createTypeTag(simulation.type));
     requestCellRandomDelay.innerHTML = simulation.options.maxRandomDelay;
@@ -104,7 +122,7 @@ console.log(createTypeTag(simulation.type));
     simulation.requests.sent$.subscribe((sent) => requestCellSent.innerHTML = sent);
     requestCellCompleted.innerHTML = simulation.requests.completed;
     simulation.requests.completed$.subscribe((completed) => requestCellCompleted.innerHTML = completed);
-    requestCellTook.innerHTML = simulation.requests.took;
+    requestCellTook.innerHTML = simulation.requests.time.took;
     simulation.requests.time.took$.subscribe((took) => requestCellTook.innerHTML = took);
 
     requestRow.appendChild(requestCellId);
@@ -117,7 +135,6 @@ console.log(createTypeTag(simulation.type));
 
     requestsTableBodyNew.appendChild(requestRow)
     if (requestsTableRows.length > 0) {
-        console.log(requestsTableRows);
         requestsTableRows.forEach((node) => requestsTableBodyNew.appendChild(node));
     }
 
@@ -125,36 +142,38 @@ console.log(createTypeTag(simulation.type));
 }
 
 function makeRequest(simulation) {
-    const randomDelay = Math.floor(Math.random() * (simulation.options.maxRandomDelay));
-    const requestObservable = rxjs.timer(randomDelay);
-
-    simulation.requests.randomDelay = randomDelay;
     simulation.requests.time.start = Date.now();
+    simulation.requests.time.took = 0;
+
     simulation.requests.sent += 1;
     simulation.requests.sent$.next(simulation.requests.sent);
 
-    requestObservable.subscribe(() => {
-        treatResponse(simulation);
-    });
-
-    return requestObservable;
+    return rxjs.from(
+        axios.post(`http://${MIDDLEWARE.host}:${MIDDLEWARE.port}/simulation/${simulation.type.type}`, { 
+            maxRandomDelay: simulation.options.maxRandomDelay
+        })
+    );
 }
 
-function treatResponse(simulation) {
+function treatResponse(simulation, index, response, err) {
     const srcElement = document.querySelector('#' + simulation.srcElement.id);
+    const request = simulation.requests.requests[index];
+console.log(err);
+    request.end = Date.now();
+    request.took = request.end - request.start;
+    request.reponse = response;
 
     simulation.requests.completed += 1;
     simulation.requests.completed$.next(simulation.requests.completed);
 
+    updateSimulationTookTime(simulation);
+
     srcElement.innerText = `${simulation.requests.completed}/${simulation.requests.total}`;
 
-    if (simulation.requests.completed == simulation.requests.total) {
-        simulation.requests.time.stop = Date.now();
-        simulation.requests.time.took = simulation.requests.time.stop - simulation.requests.time.start;
-        simulation.requests.time.took$.next(simulation.requests.time.took);
+    simulation.requests.requests$.next(simulation.requests.requests);
 
-        srcElement.disabled = false;
-        srcElement.innerText = simulation.srcElement.innerText;
+    if (simulation.requests.completed == simulation.requests.total) {
+        simulation.requests.requests$.complete();
     }
 }
 
@@ -163,12 +182,31 @@ function startSimulation(simulation) {
 
     simulation.requests.requests$.next(
         rxjs.range(0, simulation.requests.total)
-            .subscribe((i) => rxjs.forkJoin(makeRequest(simulation)))
+            .subscribe((index) => {
+                const request = createRequest(`${simulation.type.type}-${index}`);
+
+                simulation.requests.requests.push(request);
+                makeRequest(simulation)
+                .subscribe(
+                    (response) => treatResponse(simulation, index, response, null),
+                    (err) => treatResponse(simulation, index, null, 'err'));
+        })
     );
 }
 
+function updateSimulationTookTime(simulation) {
+    simulation.requests.time.end = Date.now();
+    simulation.requests.time.took = simulation.requests.time.end - simulation.requests.time.start;
+    simulation.requests.time.took$.next(simulation.requests.time.took);
+}
+
 function endSimulation(simulation) {
-    document.querySelector('#' + simulation.srcElement.id).disabled = false;
+    const srcElement = document.querySelector('#' + simulation.srcElement.id);
+
+    updateSimulationTookTime(simulation);
+
+    srcElement.disabled = false;
+    srcElement.innerText = simulation.srcElement.innerText;
 }
 
 function simulate(event) {
@@ -207,7 +245,9 @@ rxjs.fromEvent(document.querySelector('#btn-exception'), 'click')
 simulations$.subscribe(
     simulation =>  {
         simulation.requests.requests$.subscribe(
-            () => console.log('finished')
+            (response) => null,
+            (err) => console.log(err),
+            () => endSimulation(simulation)
         );
 
         startSimulation(simulation);

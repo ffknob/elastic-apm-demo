@@ -1,4 +1,6 @@
 const util = require('../shared/util');
+const uuid = require('uuid');
+const fakerator = require('fakerator');
 
 module.exports = class Simulation {
     constructor() { }
@@ -13,19 +15,37 @@ module.exports = class Simulation {
         apm.setLabel(name, value);
     }
 
-    static async generateSuccess(maxRandomDelay) {
-        await this.randomDelay(maxRandomDelay);
+    static setUserContext(userContext) {
+        const firstName = fakerator.names.firstName();
+        const lastName = fakerator.names.lastName();
+        const email = fakerator.internet.email(firstName, lastName);
+
+        apm.setUserContext({
+            id: uuid.v4(),
+            username: firstname.lowercase(),
+            email: email
+        });
     }
 
-    static async generateThrowError(maxRandomDelay) {
+    static setCustomContext() {
+
+    }
+
+    static async generateSuccess(simulationRequest) {
+        await this.randomDelay(simulationRequest.maxRandomDelay);
+
+        
+    }
+
+    static async generateThrownError(simulationRequest) {
         const error = new Error('This is an error');
-        await this.randomDelay(maxRandomDelay);
+        await this.randomDelay(simulationRequest.maxRandomDelay);
         throw error; 
     }
 
-    static async generateUncaughtError(maxRandomDelay) {
+    static async generateUncaughtError(simulationRequest) {
         const error = new Error('This is an error');
-        await this.randomDelay(maxRandomDelay);
+        await this.randomDelay(simulationRequest.maxRandomDelay);
         apm.captureError(error); 
     }
 

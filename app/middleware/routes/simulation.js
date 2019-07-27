@@ -5,7 +5,7 @@ const requestParserController = require('../controllers/request-parser');
 const simulationController = require('../controllers/simulation');
 
 router.post('/success', requestParserController.requestParser, simulationController.generateSuccess);
-router.post('/error', requestParserController.requestParser, simulationController.generateThrowError);
+router.post('/thrown-error', requestParserController.requestParser, simulationController.generateThrownError);
 router.post('/exception', requestParserController.requestParser, simulationController.generateException);
 
 module.exports = router;

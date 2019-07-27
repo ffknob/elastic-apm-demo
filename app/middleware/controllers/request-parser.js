@@ -1,10 +1,14 @@
 const SimulationRequest = require('../models/simulation-request');
 
-exports.requestParser = async (req, res, next) => {
-    const maxRandomDelay = req.body.maxRandomDelay;
-    const labels = req.body.labels;
-    const simulationRequest = new SimulationRequest(maxRandomDelay, labels);
+exports.requestParser = (req, res, next) => {
+    const simulationOptions = req.body.simulationOptions;
 
-    req.locals.simulationRequest = simulationRequest;
-    res.next();
+    const simulationRequest = new SimulationRequest(
+        simulationOptions.maxRandomDelay,
+        simulationOptions.labels,
+        simulationOptions.setUserContext,
+        simulationOptions.setCustomContext);
+
+    res.locals.simulationRequest = simulationRequest;
+    next();
 };

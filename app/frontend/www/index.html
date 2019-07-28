@@ -16,6 +16,8 @@
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 
     <script defer src="scripts/main.js"></script>
+    <script defer src="scripts/simulation.js"></script>
+    <script defer src="scripts/form.js"></script>
 </head>
 
 <body>
@@ -48,40 +50,97 @@
                             </header>
                             <section>
                                 <form id="form-request">
-                                    <div class="columns">
-                                        <div class="column">
-                                            <div class="field">
-                                                <label class="label">How many requests?</label>
-                                                <div class="control">
-                                                    <div class="select">
-                                                        <select id="select-number-of-requests">
-                                                            <option selected>1</option>
-                                                            <option>5</option>
-                                                            <option>10</option>
-                                                            <option>25</option>
-                                                            <option>50</option>
-                                                            <option>100</option>
-                                                        </select>
+                                    <fieldset id="fieldset-requests" class="box">
+                                        <legend class="label">Requests</legend>
+                                        <div class="columns">
+                                            <div class="column">
+                                                <div class="field">
+                                                    <label class="label">How many requests?</label>
+                                                    <div class="control">
+                                                        <div class="select">
+                                                            <select id="select-number-of-requests">
+                                                                <option selected>1</option>
+                                                                <option>5</option>
+                                                                <option>10</option>
+                                                                <option>25</option>
+                                                                <option>50</option>
+                                                                <option>100</option>
+                                                            </select>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-
-                                        <div class="column">
-                                            <div class="field">
-                                                <label class="label">Max. random delay (ms)</label>
-                                                <div class="control has-icons-left">
-                                                    <input id="input-max-random-delay" class="input" type="text" placeholder="Random delay" value="1000">
-                                                    <span class="icon is-small is-left">
-                                                        <i class="fas fa-clock"></i>
-                                                    </span>
+                                            <div class="column">
+                                                <div class="field">
+                                                    <label class="label">Max. random delay (ms)</label>
+                                                    <div class="control has-icons-left">
+                                                        <input id="input-max-random-delay" class="input" type="text" placeholder="Random delay" value="1000">
+                                                        <span class="icon is-small is-left">
+                                                            <i class="fas fa-clock"></i>
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="column">
+                                            <div class="column">
 
+                                            </div>
                                         </div>
-                                    </div>
+                                    </fieldset> 
+
+                                    <fieldset id="fieldset-options" class="box">
+                                        <legend class="label">Options</legend>
+                                        <div class="field">
+                                            <label class="checkbox">
+                                                <input id="input-set-random-user-context" type="checkbox" checked>
+                                                Set random user context
+                                            </label>
+                                        </div>
+                                        <div class="field">                                        
+                                            <label class="checkbox">
+                                                <input id="input-set-random-custom-context" type="checkbox" checked>
+                                                Set random custom context
+                                            </label>
+                                        </div>
+                                    </fieldset>
+
+                                    <fieldset id="fieldset-user-context" class="box hide">
+                                        <legend class="label">User context</legend>
+
+                                        <div class="field">
+                                            <label class="label">Name</label>
+                                            <div class="control has-icons-left">
+                                                <input id="input-user-context-name" class="input" type="text" placeholder="" value="John Doe">
+                                                <span class="icon is-small is-left">
+                                                    <i class="fas fa-user"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="field">
+                                            <label class="label">Username</label>
+                                            <div class="control has-icons-left">
+                                                <input id="input-user-context-username" class="input" type="text" placeholder="" value="johndoe">
+                                                <span class="icon is-small is-left">
+                                                    <i class="fas fa-user"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="field">
+                                            <label class="label">E-mail</label>
+                                            <div class="control has-icons-left">
+                                                <input id="input-user-context-email" class="input" type="text" placeholder="" value="johndoe@nowhere.com">
+                                                <span class="icon is-small is-left">
+                                                    <i class="fas fa-envelope"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                    <fieldset id="fieldset-custom-context" class="box hide">
+                                        <legend class="label">Custom context</legend>
+    
+                                    </fieldset>
 
                                     <div class="field">
                                         <label class="label">What to do?</label>
@@ -93,8 +152,14 @@
                                             </div>
 
                                             <div class="control">
-                                                <button id="btn-error" name="error" class="button is-warning">
-                                                Error
+                                                <button id="btn-thrown-error" name="Thrown Error" class="button is-warning">
+                                                Thrown Error
+                                                </button>
+                                            </div>
+
+                                            <div class="control">
+                                                <button id="btn-uncaught-error" name="Uncaught Error" class="button is-warning">
+                                                Uncaught Error
                                                 </button>
                                             </div>
 

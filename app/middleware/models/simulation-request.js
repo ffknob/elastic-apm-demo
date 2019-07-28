@@ -1,8 +1,15 @@
 module.exports = class SimulationRequest {
-    constructor(maxRandomDelay, labels, setUserContext, setCustomContext) {
+    constructor(maxRandomDelay,
+                labels,
+                setRandomUserContext,
+                setRandomCustomContext,
+                userContext,
+                customContext) {
         this.maxRandomDelay = maxRandomDelay;
         this.labels = labels;
-        this.setUserContext = setUserContext;
-        this.setCustomContext = setCustomContext;
+        this.setRandomUserContext = setRandomUserContext;
+        this.setRandomCustomContext = setRandomCustomContext;
+        this.userContext = userContext;
+        this.customContext = customContext;
     }
 }

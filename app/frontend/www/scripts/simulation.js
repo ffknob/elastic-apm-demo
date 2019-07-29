@@ -1,7 +1,12 @@
+const { Subject, range, from, of, throwError } = rxjs;
+const { map, filter, timeoutWith, catchError } = rxjs.operators;
+
 const MIDDLEWARE = {
     host: 'localhost',
     port: 3000
 };
+
+const TIMEOUT = 2000;
 
 const SIMULATION_TYPES = {
     SUCCESS: {
@@ -94,14 +99,16 @@ function createSimulation(simulationType) {
                 start: null,
                 end: null,
                 took: 0,
-                took$: new rxjs.Subject()
+                took$: new Subject()
             },
             sent: 0,
-            sent$: new rxjs.Subject(),
+            sent$: new Subject(),
             completed: 0,
-            completed$: new rxjs.Subject(),
+            completed$: new Subject(),
+            timedOut: 0,
+            timedOut$: new Subject(),
             requests: [],
-            requests$: new rxjs.Subject()
+            requests$: new Subject()
         },
         srcElement: {
             id: event.srcElement.id,
@@ -143,6 +150,7 @@ function createRequestsTableRow(simulation) {
     const requestCellRandomDelay = document.createElement('td');
     const requestCellNumberOfRequests = document.createElement('td');
     const requestCellSent = document.createElement('td');
+    const requestCellTimedOut = document.createElement('td');    
     const requestCellCompleted = document.createElement('td');
     const requestCellTook = document.createElement('td');
 
@@ -152,6 +160,8 @@ function createRequestsTableRow(simulation) {
     requestCellNumberOfRequests.innerHTML = simulation.requests.total;
     requestCellSent.innerHTML = simulation.requests.sent;
     simulation.requests.sent$.subscribe((sent) => requestCellSent.innerHTML = sent);
+    requestCellTimedOut.innerHTML = simulation.requests.timedOut;
+    simulation.requests.timedOut$.subscribe((timedOut) => requestCellTimedOut.innerHTML = timedOut);
     requestCellCompleted.innerHTML = simulation.requests.completed;
     simulation.requests.completed$.subscribe((completed) => requestCellCompleted.innerHTML = completed);
     requestCellTook.innerHTML = simulation.requests.time.took;
@@ -162,6 +172,7 @@ function createRequestsTableRow(simulation) {
     requestRow.appendChild(requestCellRandomDelay);
     requestRow.appendChild(requestCellNumberOfRequests);
     requestRow.appendChild(requestCellSent);
+    requestRow.appendChild(requestCellTimedOut);    
     requestRow.appendChild(requestCellCompleted);
     requestRow.appendChild(requestCellTook);
 
@@ -180,11 +191,9 @@ function makeRequest(simulation) {
     simulation.requests.sent += 1;
     simulation.requests.sent$.next(simulation.requests.sent);
 
-    return rxjs.from(
-        axios.post(`http://${MIDDLEWARE.host}:${MIDDLEWARE.port}/simulation/${simulation.type.type}`, { 
+    return axios.post(`http://${MIDDLEWARE.host}:${MIDDLEWARE.port}/simulation/${simulation.type.type}`, { 
             simulationSettings: simulation.settings
-        })
-    );
+        });
 }
 
 function treatResponse(simulation, index, response, err) {
@@ -195,8 +204,13 @@ function treatResponse(simulation, index, response, err) {
     request.took = request.end - request.start;
     request.reponse = response;
 
-    simulation.requests.completed += 1;
-    simulation.requests.completed$.next(simulation.requests.completed);
+    if (err.timedOut) {
+        simulation.requests.timedOut += 1;
+        simulation.requests.timedOut$.next(simulation.requests.timedOut);
+    } else {
+        simulation.requests.completed += 1;
+        simulation.requests.completed$.next(simulation.requests.completed);
+    }
 
     updateSimulationTookTime(simulation);
 
@@ -204,7 +218,7 @@ function treatResponse(simulation, index, response, err) {
 
     simulation.requests.requests$.next(simulation.requests.requests);
 
-    if (simulation.requests.completed == simulation.requests.total) {
+    if ((simulation.requests.completed + simulation.requests.timedOut) == simulation.requests.total) {
         simulation.requests.requests$.complete();
     }
 }
@@ -213,15 +227,20 @@ function startSimulation(simulation) {
     document.querySelector('#' + simulation.srcElement.id).disabled = true;
 
     simulation.requests.requests$.next(
-        rxjs.range(0, simulation.requests.total)
-            .subscribe((index) => {
-                const request = createRequest(`${simulation.type.type}-${index}`);
+        range(0, simulation.requests.total)
+        .subscribe(
+            (index) => {
+            const request = createRequest(`${simulation.type.type}-${index}`);
 
-                simulation.requests.requests.push(request);
-                makeRequest(simulation)
-                .subscribe(
-                    (response) => treatResponse(simulation, index, response, null),
-                    (err) => treatResponse(simulation, index, null, err));
+            simulation.requests.requests.push(request);
+            from(makeRequest(simulation))
+            .pipe(
+                timeoutWith(TIMEOUT, throwError({ timeout: TIMEOUT, timedOut: true }))
+            )
+            .subscribe(
+                (response) => treatResponse(simulation, index, response, null),
+                (err) => treatResponse(simulation, index, null, err)
+            );
         })
     );
 }

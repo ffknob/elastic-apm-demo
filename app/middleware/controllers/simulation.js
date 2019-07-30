@@ -5,28 +5,34 @@ exports.generateSuccess = async (req, res, next) => {
 
     await SimulationService.generateSuccess(simulationRequest);
 
-    res.send('done');
+    res.status(200).send('done');
 };
 
 exports.generateThrownError = async (req, res, next) => {
     const simulationRequest = res.locals.simulationRequest;
+    let error = new Error('Internal Server Error');
 
     try {
         await SimulationService.generateThrownError(simulationRequest);
     } catch(err) {
-        res.status(500).send('Internal Server Error');
+        error.statusCode = 500;
+        error.message = err;
+        throw error;
     }
 };
 
 exports.generateUncaughtError = async (req, res, next) => {
     const simulationRequest = res.locals.simulationRequest;
+    let error = new Error('Internal Server Error');
 
     try {
         await SimulationService.generateUncaughtError(simulationRequest);
-        res.status(500).send('Internal Server Error');
     } catch(err) {
-        res.status(500).send('Internal Server Error');
+        error.statusCode = 500;
+        error.message = err;
     }
+
+    throw error;
 };
 
 exports.generateException = async (req, res, next) => {

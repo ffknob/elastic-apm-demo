@@ -72,9 +72,9 @@
                                             </div>
                                             <div class="column">
                                                 <div class="field">
-                                                    <label class="label">Max. random delay (ms)</label>
+                                                    <label class="label">Max. random delay</label>
                                                     <div class="control has-icons-left">
-                                                        <input id="input-max-random-delay" class="input" type="text" placeholder="Random delay" value="1000">
+                                                        <input id="input-max-random-delay" class="input" type="text" placeholder="Random delay" value="50000">
                                                         <span class="icon is-small is-left">
                                                             <i class="fas fa-clock"></i>
                                                         </span>
@@ -82,7 +82,15 @@
                                                 </div>
                                             </div>
                                             <div class="column">
-
+                                                <div class="field">
+                                                    <label class="label">Timeout</label>
+                                                    <div class="control has-icons-left">
+                                                        <input id="input-timeout" class="input" type="text" placeholder="Timeout" value="40000">
+                                                        <span class="icon is-small is-left">
+                                                            <i class="fas fa-hourglass-end"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </fieldset> 
@@ -152,20 +160,20 @@
                                             </div>
 
                                             <div class="control">
-                                                <button id="btn-thrown-error" name="Thrown Error" class="button is-warning">
+                                                <button id="btn-thrown-error" name="Thrown Error" class="button is-danger">
                                                 Thrown Error
                                                 </button>
                                             </div>
 
                                             <div class="control">
-                                                <button id="btn-uncaught-error" name="Uncaught Error" class="button is-warning">
+                                                <button id="btn-uncaught-error" name="Uncaught Error" class="button is-link">
                                                 Uncaught Error
                                                 </button>
                                             </div>
 
                                             <div class="control">
-                                                <button id="btn-exception" name="exception" class="button is-danger">
-                                                Exceptions
+                                                <button id="btn-complex" name="complex" class="button is-black">
+                                                Complex
                                                 </button>
                                             </div>
                                         </div>
@@ -191,7 +199,8 @@
                                         <tr>
                                             <th><abbr title="Id">#</abbr></th>
                                             <th><abbr title="Type">Type</abbr></th>
-                                            <th><abbr title="Random delay">Random delay</abbr></th>
+                                            <th><abbr title="Max. random delay">Max. random delay</abbr></th>
+                                            <th><abbr title="Timeout in">Timeout in</abbr></th>                                            
                                             <th><abbr title="Total">Total</abbr></th>
                                             <th><abbr title="Sent">Sent</abbr></th>
                                             <th><abbr title="Sent">Timed out</abbr></th>                                            

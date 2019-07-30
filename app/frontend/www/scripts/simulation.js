@@ -6,7 +6,8 @@ const MIDDLEWARE = {
     port: 3000
 };
 
-const TIMEOUT = 2000;
+const MAX_RANDOM_DELAY = 50000;
+const TIMEOUT_IN = 40000;
 
 const SIMULATION_TYPES = {
     SUCCESS: {
@@ -17,22 +18,22 @@ const SIMULATION_TYPES = {
     THROWN_ERROR: {
         type: 'thrown-error',
         text: 'Thrown Error',
-        class: 'is-warning'
+        class: 'is-danger'
     },
     UNCAUGHT_ERROR: {
         type: 'uncaught-error',
         text: 'Uncaught Error',
-        class: 'is-warning'
+        class: 'is-link'
     },
-    EXCEPTION: {
-        type: 'exception',
-        text: 'Exception',
-        class: 'is-danger'
+    COMPLEX: {
+        type: 'complex',
+        text: 'Complex',
+        class: 'is-black'
     }
 };
 
 let simulationId = 0;
-let simulations$ = new rxjs.Subject();
+let simulations$ = new Subject();
 
 function selectSimulationType(event) {
     let simulationType = null;
@@ -50,8 +51,8 @@ function selectSimulationType(event) {
             simulationType = SIMULATION_TYPES.UNCAUGHT_ERROR;
             break;
 
-        case 'btn-exception':
-            simulationType = SIMULATION_TYPES.EXCEPTION;
+        case 'btn-complex':
+            simulationType = SIMULATION_TYPES.COMPLEX;
             break;
     }
 
@@ -77,7 +78,8 @@ function createCustomContext() {
 
 function createSimulation(simulationType) {
     const numberOfRequests = document.querySelector('#select-number-of-requests').value;
-    const maxRandomDelay = document.querySelector('#input-max-random-delay').value;
+    const maxRandomDelay = document.querySelector('#input-max-random-delay').value || MAX_RANDOM_DELAY;
+    const timeoutIn = document.querySelector('#input-timeout').value || TIMEOUT_IN;
     const setRandomUserContext = document.querySelector('#input-set-random-user-context').value;
     const setRandomCustomContext = document.querySelector('#input-set-random-custom-context').value;
 
@@ -88,6 +90,7 @@ function createSimulation(simulationType) {
         settings: {
             numberOfRequests: numberOfRequests,
             maxRandomDelay: maxRandomDelay,
+            timeoutIn: timeoutIn,
             setRandomUserContext: setRandomUserContext,
             userContext: createUserContext(),
             setRandomCustomContext: setRandomCustomContext,
@@ -147,7 +150,8 @@ function createRequestsTableRow(simulation) {
     const requestRow = document.createElement('tr');
     const requestCellId = document.createElement('th');
     const requestCellType = document.createElement('td');
-    const requestCellRandomDelay = document.createElement('td');
+    const requestCellMaxRandomDelay = document.createElement('td');
+    const requestCellTimeoutIn = document.createElement('td');    
     const requestCellNumberOfRequests = document.createElement('td');
     const requestCellSent = document.createElement('td');
     const requestCellTimedOut = document.createElement('td');    
@@ -156,7 +160,8 @@ function createRequestsTableRow(simulation) {
 
     requestCellId.innerHTML = simulation.id;
     requestCellType.appendChild(createTypeTag(simulation.type));
-    requestCellRandomDelay.innerHTML = simulation.settings.maxRandomDelay;
+    requestCellMaxRandomDelay.innerHTML = simulation.settings.maxRandomDelay;
+    requestCellTimeoutIn.innerHTML = simulation.settings.timeoutIn;    
     requestCellNumberOfRequests.innerHTML = simulation.requests.total;
     requestCellSent.innerHTML = simulation.requests.sent;
     simulation.requests.sent$.subscribe((sent) => requestCellSent.innerHTML = sent);
@@ -169,7 +174,8 @@ function createRequestsTableRow(simulation) {
 
     requestRow.appendChild(requestCellId);
     requestRow.appendChild(requestCellType);
-    requestRow.appendChild(requestCellRandomDelay);
+    requestRow.appendChild(requestCellMaxRandomDelay);
+    requestRow.appendChild(requestCellTimeoutIn);    
     requestRow.appendChild(requestCellNumberOfRequests);
     requestRow.appendChild(requestCellSent);
     requestRow.appendChild(requestCellTimedOut);    
@@ -204,7 +210,7 @@ function treatResponse(simulation, index, response, err) {
     request.took = request.end - request.start;
     request.reponse = response;
 
-    if (err.timedOut) {
+    if (err && err.timedOut) {
         simulation.requests.timedOut += 1;
         simulation.requests.timedOut$.next(simulation.requests.timedOut);
     } else {
@@ -224,6 +230,8 @@ function treatResponse(simulation, index, response, err) {
 }
 
 function startSimulation(simulation) {
+    const timeoutIn = simulation.settings.timeoutIn;
+
     document.querySelector('#' + simulation.srcElement.id).disabled = true;
 
     simulation.requests.requests$.next(
@@ -235,7 +243,7 @@ function startSimulation(simulation) {
             simulation.requests.requests.push(request);
             from(makeRequest(simulation))
             .pipe(
-                timeoutWith(TIMEOUT, throwError({ timeout: TIMEOUT, timedOut: true }))
+                timeoutWith(timeoutIn, throwError({ timeoutIn: timeoutIn, timedOut: true }))
             )
             .subscribe(
                 (response) => treatResponse(simulation, index, response, null),

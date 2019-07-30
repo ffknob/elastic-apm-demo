@@ -28,6 +28,11 @@ app.use(function (req, res, next) {
 
 app.use('/simulation', simulationRoutes);
 
+app.use((err, req, res, next) => {
+    console.log(err)
+    res.status(err.statusCode  || 500).json({ error: true, message: message });
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT), () => console.log(`Server running on port ${PORT}`);

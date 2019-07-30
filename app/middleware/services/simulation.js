@@ -7,8 +7,10 @@ module.exports = class Simulation {
     constructor() { }
 
     static randomDelay(maxRandomDelay) {
+        const delay = util.randomDelay(maxRandomDelay);
+console.log(`Max. delay: ${maxRandomDelay}, Delay: ${delay}`);        
         return new Promise((resolve, reject) => {
-            setTimeout(() => resolve(),  util.randomDelay(maxRandomDelay))
+            setTimeout(() => resolve(), delay)
         });
     }
 

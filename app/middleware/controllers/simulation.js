@@ -10,33 +10,22 @@ exports.generateSuccess = async (req, res, next) => {
 
 exports.generateThrownError = async (req, res, next) => {
     const simulationRequest = res.locals.simulationRequest;
-    let error = new Error('Internal Server Error');
 
     try {
         await SimulationService.generateThrownError(simulationRequest);
     } catch(err) {
-        error.statusCode = 500;
-        error.message = err;
-        throw error;
+        throw err;
     }
 };
 
 exports.generateUncaughtError = async (req, res, next) => {
     const simulationRequest = res.locals.simulationRequest;
-    let error = new Error('Internal Server Error');
 
-    try {
-        await SimulationService.generateUncaughtError(simulationRequest);
-    } catch(err) {
-        error.statusCode = 500;
-        error.message = err;
-    }
-
-    throw error;
+    await SimulationService.generateUncaughtError(simulationRequest);
 };
 
-exports.generateException = async (req, res, next) => {
+exports.generateComplexTransaction = async (req, res, next) => {
     const simulationRequest = res.locals.simulationRequest;
 
-    await SimulationService.generateException(simulationRequest);
+    await SimulationService.generateComplexTransaction(simulationRequest);
 };

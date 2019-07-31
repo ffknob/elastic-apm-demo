@@ -44,7 +44,7 @@ rxjs.fromEvent(document.querySelector('#btn-uncaught-error'), 'click')
         err => console.log(err)
     );
 
-rxjs.fromEvent(document.querySelector('#btn-complex'), 'click')
+rxjs.fromEvent(document.querySelector('#btn-complex-transaction'), 'click')
     .subscribe(
         event => simulate(event),
         err => console.log(err)

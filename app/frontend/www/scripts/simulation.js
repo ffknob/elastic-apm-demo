@@ -25,9 +25,9 @@ const SIMULATION_TYPES = {
         text: 'Uncaught Error',
         class: 'is-link'
     },
-    COMPLEX: {
-        type: 'complex',
-        text: 'Complex',
+    COMPLEX_TRANSACTION: {
+        type: 'complex-transaction',
+        text: 'Complex Transaction',
         class: 'is-black'
     }
 };
@@ -51,8 +51,8 @@ function selectSimulationType(event) {
             simulationType = SIMULATION_TYPES.UNCAUGHT_ERROR;
             break;
 
-        case 'btn-complex':
-            simulationType = SIMULATION_TYPES.COMPLEX;
+        case 'btn-complex-transaction':
+            simulationType = SIMULATION_TYPES.COMPLEX_TRANSACTION;
             break;
     }
 
@@ -60,11 +60,11 @@ function selectSimulationType(event) {
 }
 
 function createUserContext() {
-    const name = document.querySelector('#input-user-context-name').value;
+    const id = document.querySelector('#input-user-context-id').value;
     const username = document.querySelector('#input-user-context-username').value;
     const email = document.querySelector('#input-user-context-email').value;
     const userContext = {
-        name: name,
+        id: id,
         username: username,
         email: email
     };

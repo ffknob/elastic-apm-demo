@@ -7,6 +7,6 @@ const simulationController = require('../controllers/simulation');
 router.post('/success', requestParserController.requestParser, simulationController.generateSuccess);
 router.post('/thrown-error', requestParserController.requestParser, simulationController.generateThrownError);
 router.post('/uncaught-error', requestParserController.requestParser, simulationController.generateUncaughtError);
-router.post('/exception', requestParserController.requestParser, simulationController.generateException);
+router.post('/complex-transaction', requestParserController.requestParser, simulationController.generateComplexTransaction);
 
 module.exports = router;

@@ -1,4 +1,5 @@
 const util = require('../shared/util');
+const ErrorGenerator = require('./error-generator');
 const uuid = require('uuid');
 const Fakerator = require('fakerator');
 const apm = require('elastic-apm-node');
@@ -58,22 +59,20 @@ console.log(`Max. delay: ${maxRandomDelay}, Delay: ${delay}`);
         this.setUserContext(simulationRequest);
         await this.randomDelay(simulationRequest.maxRandomDelay);
 
-        const error = new Error('This is an error');
-        throw error; 
+        const errorGenerator = new ErrorGenerator();
+        throw errorGenerator.getRandomError(); 
     }
 
     static async generateUncaughtError(simulationRequest) {
         this.setUserContext(simulationRequest);
         await this.randomDelay(simulationRequest.maxRandomDelay);
 
-        const error = new Error('This is an error');
-        apm.captureError(error); 
+        const errorGenerator = new ErrorGenerator();
+        apm.captureError(errorGenerator.getRandomError()); 
     }
 
-    static async generateException(maxRandomDelay) {
+    static async generateComplexTransaction(simulationRequest) {
         this.setUserContext(simulationRequest);
-        await this.randomDelay(maxRandomDelay);
-
-        throw new Error('This is an error');
+        await this.randomDelay(simulationRequest.maxRandomDelay);
     }
 }

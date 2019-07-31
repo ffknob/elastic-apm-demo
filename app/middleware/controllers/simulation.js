@@ -14,7 +14,7 @@ exports.generateThrownError = async (req, res, next) => {
     try {
         await SimulationService.generateThrownError(simulationRequest);
     } catch(err) {
-        throw err;
+        next(err);
     }
 };
 

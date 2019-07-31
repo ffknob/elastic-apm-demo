@@ -9,7 +9,8 @@ exports.requestParser = (req, res, next) => {
         simulationSettings.setRandomUserContext,
         simulationSettings.setRandomCustomContext,
         simulationSettings.userContext,
-        simulationSettings.customContext);
+        simulationSettings.customContext,
+        simulationSettings.complexTransactionTotalSpans);
 
     res.locals.simulationRequest = simulationRequest;
     next();

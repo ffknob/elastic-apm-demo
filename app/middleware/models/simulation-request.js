@@ -4,12 +4,14 @@ module.exports = class SimulationRequest {
                 setRandomUserContext,
                 setRandomCustomContext,
                 userContext,
-                customContext) {
+                customContext,
+                complexTransactionTotalSpans) {
         this.maxRandomDelay = maxRandomDelay;
         this.labels = labels;
         this.setRandomUserContext = setRandomUserContext;
         this.setRandomCustomContext = setRandomCustomContext;
         this.userContext = userContext;
         this.customContext = customContext;
+        this.complexTransactionTotalSpans = complexTransactionTotalSpans;
     }
 }

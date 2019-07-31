@@ -9,6 +9,17 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 require('dotenv').config();
 
+const BackgroundTask = require('./services/background-task');
+let backgroundTaskId = 1;
+setInterval(() => {
+console.log(`Background task #${backgroundTaskId}`);    
+    let backgroundTask = new BackgroundTask();
+    let userContext = { random: true };
+
+    backgroundTask.execute(`Background task #${backgroundTaskId}`, 'task', 5, 10000, userContext);
+    backgroundTaskId += 1;
+}, 50000);
+
 const simulationRoutes = require('./routes/simulation');
 
 const app = express();
@@ -29,7 +40,7 @@ app.use(function (req, res, next) {
 app.use('/simulation', simulationRoutes);
 
 app.use((err, req, res, next) => {
-    res.status(err.statusCode  || 500).json({ error: true, message: message });
+    res.status(err.statusCode  || 500).json({ error: true, message: err.message });
 });
 
 const PORT = process.env.PORT || 3000;

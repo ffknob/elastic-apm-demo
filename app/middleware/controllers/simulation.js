@@ -1,18 +1,20 @@
-const SimulationService = require('../services/simulation');
+const Simulation = require('../services/simulation');
 
 exports.generateSuccess = async (req, res, next) => {
     const simulationRequest = res.locals.simulationRequest;
+    const simulation = new Simulation();
 
-    await SimulationService.generateSuccess(simulationRequest);
+    await simulation.generateSuccess(simulationRequest);
 
-    res.status(200).send('done');
+    res.status(200).send();
 };
 
 exports.generateThrownError = async (req, res, next) => {
     const simulationRequest = res.locals.simulationRequest;
+    const simulation = new Simulation();
 
     try {
-        await SimulationService.generateThrownError(simulationRequest);
+        await simulation.generateThrownError(simulationRequest);
     } catch(err) {
         next(err);
     }
@@ -20,12 +22,16 @@ exports.generateThrownError = async (req, res, next) => {
 
 exports.generateUncaughtError = async (req, res, next) => {
     const simulationRequest = res.locals.simulationRequest;
+    const simulation = new Simulation();
 
-    await SimulationService.generateUncaughtError(simulationRequest);
+    await simulation.generateUncaughtError(simulationRequest);
 };
 
 exports.generateComplexTransaction = async (req, res, next) => {
     const simulationRequest = res.locals.simulationRequest;
+    const simulation = new Simulation();
 
-    await SimulationService.generateComplexTransaction(simulationRequest);
+    await simulation.generateComplexTransaction(simulationRequest);
+
+    res.status(200).send();
 };

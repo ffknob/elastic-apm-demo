@@ -9,26 +9,27 @@ const MIDDLEWARE = {
 const MAX_RANDOM_DELAY = 50000;
 const TIMEOUT_IN = 40000;
 
-const SIMULATION_TYPES = {
+const SIMULATION = {
     SUCCESS: {
         type: 'success',
         text: 'Success',
-        class: 'is-success'
+        classes: ['is-success']
     },
     THROWN_ERROR: {
         type: 'thrown-error',
         text: 'Thrown Error',
-        class: 'is-danger'
+        classes: ['is-warning']
     },
     UNCAUGHT_ERROR: {
         type: 'uncaught-error',
         text: 'Uncaught Error',
-        class: 'is-link'
+        classes: ['is-danger']
     },
     COMPLEX_TRANSACTION: {
         type: 'complex-transaction',
         text: 'Complex Transaction',
-        class: 'is-black'
+        classes: ['is-black'],
+        totalSpans: 5
     }
 };
 
@@ -40,19 +41,19 @@ function selectSimulationType(event) {
 
     switch (event.srcElement.id) {
         case 'btn-success':
-            simulationType = SIMULATION_TYPES.SUCCESS;
+            simulationType = SIMULATION.SUCCESS;
             break;
 
         case 'btn-thrown-error':
-            simulationType = SIMULATION_TYPES.THROWN_ERROR;
+            simulationType = SIMULATION.THROWN_ERROR;
             break;
 
         case 'btn-uncaught-error':
-            simulationType = SIMULATION_TYPES.UNCAUGHT_ERROR;
+            simulationType = SIMULATION.UNCAUGHT_ERROR;
             break;
 
         case 'btn-complex-transaction':
-            simulationType = SIMULATION_TYPES.COMPLEX_TRANSACTION;
+            simulationType = SIMULATION.COMPLEX_TRANSACTION;
             break;
     }
 
@@ -94,7 +95,8 @@ function createSimulation(simulationType) {
             setRandomUserContext: setRandomUserContext,
             userContext: createUserContext(),
             setRandomCustomContext: setRandomCustomContext,
-            customContext: createCustomContext()
+            customContext: createCustomContext(),
+            complexTransactionTotalSpans: simulationType.totalSpans || 0
         },
         requests: {
             total: numberOfRequests,
@@ -137,7 +139,7 @@ function createRequest(id) {
 function createTypeTag(simulationType) {
     let tag = document.createElement('span');
     tag.classList.add('tag');
-    tag.classList.add(simulationType.class);
+    simulationType.classes.forEach(c => tag.classList.add(c));
     tag.innerText = simulationType.text;
 
     return tag;

@@ -73,6 +73,3 @@ module.exports = class ErrorGenerator {
         return error;
     }
 }
-
-
-

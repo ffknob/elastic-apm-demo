@@ -41,11 +41,11 @@ module.exports = class Simulation {
     }
 
     async generateSuccess(simulationRequest) {
-        this.init(simulationRequest);
+        await this.init(simulationRequest);
     }
 
     async generateThrownError(simulationRequest) {
-        this.init(simulationRequest);
+        await this.init(simulationRequest);
 
         const errorGenerator = new ErrorGenerator();
         throw errorGenerator.getRandomError(); 
@@ -54,7 +54,7 @@ module.exports = class Simulation {
     async generateUncaughtError(simulationRequest) {
         const apmService = new ApmService();
         
-        this.init(simulationRequest);
+        await this.init(simulationRequest);
 
         const errorGenerator = new ErrorGenerator();
 
@@ -65,7 +65,7 @@ module.exports = class Simulation {
         const apmService = new ApmService();
         const delayGenerator = new DelayGenerator();
 
-        this.init(simulationRequest);
+        await this.init(simulationRequest);
 
         for(let i = 0; i < simulationRequest.complexTransactionTotalSpans; i++) {
             let randomSpanTypeIndex = util.randomNumber(apmService.SPAN_TYPES().length);

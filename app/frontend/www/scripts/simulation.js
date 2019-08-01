@@ -8,6 +8,7 @@ const MIDDLEWARE = {
 
 const MAX_RANDOM_DELAY = 50000;
 const TIMEOUT_IN = 40000;
+const TOTAL_LABELS = 5;
 
 const SIMULATION = {
     SUCCESS: {
@@ -77,12 +78,26 @@ function createCustomContext() {
     return null;
 }
 
+function createLabels() {
+    const labels = [];
+
+    for (let i = 1; i <= TOTAL_LABELS; i++) {
+        let labelName = document.querySelector(`#input-labels-name-${i}`).value;
+        let labelValue = document.querySelector(`#input-labels-value-${i}`).value;
+
+        labels.push({ name: labelName, value: labelValue});
+    }
+
+    return labels;
+}
+
 function createSimulation(simulationType) {
-    const numberOfRequests = document.querySelector('#select-number-of-requests').value;
-    const maxRandomDelay = document.querySelector('#input-max-random-delay').value || MAX_RANDOM_DELAY;
-    const timeoutIn = document.querySelector('#input-timeout').value || TIMEOUT_IN;
-    const setRandomUserContext = document.querySelector('#input-set-random-user-context').value;
-    const setRandomCustomContext = document.querySelector('#input-set-random-custom-context').value;
+    const numberOfRequests = parseInt(document.querySelector('#select-number-of-requests').value);
+    const maxRandomDelay = parseInt(document.querySelector('#input-max-random-delay').value) || MAX_RANDOM_DELAY;
+    const timeoutIn = parseInt(document.querySelector('#input-timeout').value) || TIMEOUT_IN;
+    const setRandomUserContext = document.querySelector('#input-set-random-user-context').checked;
+    const setRandomCustomContext = document.querySelector('#input-set-random-custom-context').checked;
+    const setRandomLabels = document.querySelector('#input-set-random-labels').checked;
 
     simulationId += 1;
     const simulation = {
@@ -93,9 +108,11 @@ function createSimulation(simulationType) {
             maxRandomDelay: maxRandomDelay,
             timeoutIn: timeoutIn,
             setRandomUserContext: setRandomUserContext,
-            userContext: createUserContext(),
+            userContext: !setRandomUserContext ? createUserContext() : null,
             setRandomCustomContext: setRandomCustomContext,
-            customContext: createCustomContext(),
+            customContext: !setRandomCustomContext? createCustomContext() : null,
+            setRandomLabels: setRandomLabels,
+            labels: !setRandomLabels ? createLabels() : null,
             complexTransactionTotalSpans: simulationType.totalSpans || 0
         },
         requests: {

@@ -64,8 +64,8 @@ module.exports = class ErrorGenerator {
 
     getRandomError(category) {
         const errors = ERRORS.filter(e => !category ? true : e.category === category);
-        const randomIndex = Math.floor(Math.random() * (errors.length));
-        const randomError = errors[randomIndex];
+        const randomErrorIndex = Math.floor(Math.random() * (errors.length));
+        const randomError = errors[randomErrorIndex];
         const error = new Error(randomError.message);
         error.category = randomError.category;
         error.statusCode = randomError.statusCode; 

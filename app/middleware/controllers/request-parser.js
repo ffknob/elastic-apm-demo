@@ -5,13 +5,14 @@ exports.requestParser = (req, res, next) => {
 
     const simulationRequest = new SimulationRequest(
         simulationSettings.maxRandomDelay,
-        simulationSettings.labels,
         simulationSettings.setRandomUserContext,
-        simulationSettings.setRandomCustomContext,
         simulationSettings.userContext,
+        simulationSettings.setRandomCustomContext,        
         simulationSettings.customContext,
+        simulationSettings.setRandomLabels,        
+        simulationSettings.labels,        
         simulationSettings.complexTransactionTotalSpans);
-
+console.log(simulationRequest);
     res.locals.simulationRequest = simulationRequest;
     next();
 };

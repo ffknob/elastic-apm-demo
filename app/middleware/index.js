@@ -12,7 +12,7 @@ require('dotenv').config();
 const BackgroundTask = require('./services/background-task');
 let backgroundTaskId = 1;
 setInterval(() => {
-console.log(`Background task #${backgroundTaskId}`);    
+console.log(`Background task #${backgroundTaskId}`);
     let backgroundTask = new BackgroundTask();
     let userContext = { random: true };
 

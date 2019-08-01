@@ -26,6 +26,12 @@ rxjs.fromEvent(document.querySelector('#input-set-random-custom-context'), 'chan
         err => console.log(err)
     );
 
+rxjs.fromEvent(document.querySelector('#input-set-random-labels'), 'change')
+    .subscribe(
+        event => event.srcElement.checked ? hide('fieldset-labels') : show('fieldset-labels'),
+        err => console.log(err)
+    );
+
 rxjs.fromEvent(document.querySelector('#btn-success'), 'click')
     .subscribe(
         event => simulate(event),

@@ -1,17 +1,19 @@
 module.exports = class SimulationRequest {
     constructor(maxRandomDelay,
-                labels,
                 setRandomUserContext,
-                setRandomCustomContext,
                 userContext,
+                setRandomCustomContext,
                 customContext,
+                setRandomLabels,
+                labels,
                 complexTransactionTotalSpans) {
         this.maxRandomDelay = maxRandomDelay;
-        this.labels = labels;
         this.setRandomUserContext = setRandomUserContext;
-        this.setRandomCustomContext = setRandomCustomContext;
         this.userContext = userContext;
+        this.setRandomCustomContext = setRandomCustomContext;
         this.customContext = customContext;
+        this.setRandomLabels = setRandomLabels;
+        this.labels = labels;
         this.complexTransactionTotalSpans = complexTransactionTotalSpans;
     }
 }

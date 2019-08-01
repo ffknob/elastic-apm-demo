@@ -109,6 +109,12 @@
                                                 Set random custom context
                                             </label>
                                         </div>
+                                        <div class="field">                                        
+                                            <label class="checkbox">
+                                                <input id="input-set-random-labels" type="checkbox" checked>
+                                                Set random labels
+                                            </label>
+                                        </div>
                                     </fieldset>
 
                                     <fieldset id="fieldset-user-context" class="box hide">
@@ -148,6 +154,37 @@
                                     <fieldset id="fieldset-custom-context" class="box hide">
                                         <legend class="label">Custom context</legend>
     
+                                    </fieldset>
+
+                                    <fieldset id="fieldset-labels" class="box hide">
+                                        <legend class="label">Labels</legend>
+    
+                                        <div class="field">
+
+                                            <div class="columns">
+                                                <div class="column">
+                                                    <div class="has-text-centered has-text-weight-bold">Name</div>
+
+                                                    <div><input id="input-labels-name-1" class="input" type="text" placeholder="" value="environment"></div>
+                                                    <div><input id="input-labels-name-2" class="input" type="text" placeholder="" value="cloud-provider"></div>
+                                                    <div><input id="input-labels-name-3" class="input" type="text" placeholder="" value="currency"></div>
+                                                    <div><input id="input-labels-name-4" class="input" type="text" placeholder="" value="important"></div>
+                                                    <div><input id="input-labels-name-5" class="input" type="text" placeholder="" value="retry"></div>
+                                                </div>
+
+                                                <div class="column">
+                                                    <div class="has-text-centered has-text-weight-bold">Value</div>
+
+                                                    <div><input id="input-labels-value-1" class="input" type="text" placeholder="" value="Production"></div>
+                                                    <div><input id="input-labels-value-2" class="input" type="text" placeholder="" value="AWS"></div>
+                                                    <div><input id="input-labels-value-3" class="input" type="text" placeholder="" value="EUR"></div>
+                                                    <div><input id="input-labels-value-4" class="input" type="text" placeholder="" value="true"></div>
+                                                    <div><input id="input-labels-value-5" class="input" type="text" placeholder="" value="false"></div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
                                     </fieldset>
 
                                     <div class="field">
@@ -194,7 +231,7 @@
                                 <h3 class="is-size-3">Requests</h3>
                             </header>
                             <section>
-                                <table id="table-requests" class="table">
+                                <table id="table-requests" class="table is-narrow">
                                     <thead>
                                         <tr>
                                             <th><abbr title="Id">#</abbr></th>

@@ -1,5 +1,6 @@
 const DelayGenerator = require('./delay-generator');
 const ErrorGenerator = require('./error-generator');
+const LabelGenerator = require('./label-generator');
 const ApmService = require('./apm');
 const util = require('../shared/util');
 
@@ -7,12 +8,18 @@ module.exports = class Simulation {
     constructor() { }
 
     createUserContext(simulationRequest) {
-        return {
-            random: simulationRequest.setRandomUserContext,
-            id: simulationRequest.userContext.id,
-            username: simulationRequest.userContext.username,
-            email: simulationRequest.userContext.email
-        };
+        const userContext = simulationRequest.userContext;
+
+        if (userContext) {
+            return {
+                random: simulationRequest.setRandomUserContext,
+                id: userContext.id,
+                username: userContext.username,
+                email: userContext.email
+            };
+        } else {
+            return { random: true };
+        }
     }
 
     async init(simulationRequest) {
@@ -21,6 +28,14 @@ module.exports = class Simulation {
 
         const userContext = this.createUserContext(simulationRequest);
         apmService.setUserContext(userContext);
+
+        if (simulationRequest.setRandomLabels) {
+            const labelGenerator = new LabelGenerator();
+            const label = labelGenerator.getRandomLabel();
+            apmService.setLabel(label.name, label.value);
+        } else {
+            simulationRequest.labels.forEach(label => apmService.setLabel(label.name, label.value));
+        }
 
         await delayGenerator.randomDelay(simulationRequest.maxRandomDelay);
     }

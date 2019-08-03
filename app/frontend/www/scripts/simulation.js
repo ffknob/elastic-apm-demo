@@ -30,7 +30,10 @@ const SIMULATION = {
         type: 'complex-transaction',
         text: 'Complex Transaction',
         classes: ['is-black'],
+        isDistributed: true,
+        totalSubTransactions: 5,
         totalSpans: 5
+
     }
 };
 
@@ -113,7 +116,11 @@ function createSimulation(simulationType) {
             customContext: !setRandomCustomContext? createCustomContext() : null,
             setRandomLabels: setRandomLabels,
             labels: !setRandomLabels ? createLabels() : null,
-            complexTransactionTotalSpans: simulationType.totalSpans || 0
+            complexTransaction: {
+                isDistributed: simulationType.isDistributed,
+                totalSubTransactions: simulationType.totalSubTransactions,
+                totalSpans: simulationType.totalSpans || 0
+            }
         },
         requests: {
             total: numberOfRequests,

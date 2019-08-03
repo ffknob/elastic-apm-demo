@@ -1,3 +1,4 @@
+const uuid = require('uuid');
 const DelayGenerator = require('./delay-generator');
 const ErrorGenerator = require('./error-generator');
 const LabelGenerator = require('./label-generator');
@@ -65,17 +66,46 @@ module.exports = class Simulation {
         const apmService = new ApmService();
         const delayGenerator = new DelayGenerator();
 
+        const complexTransaction = simulationRequest.complexTransaction;
+        const traceparent = apmService.getCurrentTraceparent();
+
         await this.init(simulationRequest);
 
-        for(let i = 0; i < simulationRequest.complexTransactionTotalSpans; i++) {
-            let randomSpanTypeIndex = util.randomNumber(apmService.SPAN_TYPES().length);
-            let span = apmService.startSpan(`Span #${i}`, apmService.SPAN_TYPES()[randomSpanTypeIndex]);
+        if (complexTransaction.isDistributed) {
+            for (let i =0; i < complexTransaction.totalSubTransactions; i++) {
+                let subTransactionName = `Sub-transaction #${i}`;
+                let subTransactionType = 'custom';
+                let subTransactionId = uuid.v4().split('-')[0];
+                let subTransaction = 
+                    apmService.startTransaction(
+                        `${subTransactionName} (${subTransactionId})`,
+                        subTransactionType,
+                        { childOf:  traceparent});
+console.log(traceparent);
+                for (let j = 0; j < complexTransaction.totalSpans; j++) {
+                    let randomSpanTypeIndex = util.randomNumber(apmService.SPAN_TYPES().length);
+                    let span = subTransaction.startSpan(`Span #${i}.${j}`, apmService.SPAN_TYPES()[randomSpanTypeIndex]);
+        
+                    await delayGenerator.randomDelay(simulationRequest.maxRandomDelay);
+        
+                    span.end();
+        
+                    await delayGenerator.randomDelay(simulationRequest.maxRandomDelay);
+                }
 
-            await delayGenerator.randomDelay(simulationRequest.maxRandomDelay);
-
-            span.end();
-
-            await delayGenerator.randomDelay(simulationRequest.maxRandomDelay);
+                subTransaction.end();
+            }
+        } else {
+            for (let j = 0; j < complexTransaction.totalSpans; j++) {
+                let randomSpanTypeIndex = util.randomNumber(apmService.SPAN_TYPES().length);
+                let span = apmService.startSpan(`Span #${j}`, apmService.SPAN_TYPES()[randomSpanTypeIndex]);
+    
+                await delayGenerator.randomDelay(simulationRequest.maxRandomDelay);
+    
+                span.end();
+    
+                await delayGenerator.randomDelay(simulationRequest.maxRandomDelay);
+            }
         }
     }
 }

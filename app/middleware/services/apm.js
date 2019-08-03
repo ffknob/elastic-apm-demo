@@ -9,6 +9,14 @@ module.exports = class ApmService {
         return ['app', 'db', 'cache', 'template', 'ext'];
     }
 
+    getCurrentTransaction() {
+        return apm.currentTransaction;
+    }
+
+    getCurrentTraceparent() {
+        return apm.currentTraceparent;
+    }
+
     setLabel(name, value) {
         apm.setLabel(name, value);
     }

@@ -1,3 +1,4 @@
+const request = require('request');
 const uuid = require('uuid');
 const DelayGenerator = require('./delay-generator');
 const ErrorGenerator = require('./error-generator');
@@ -71,34 +72,19 @@ module.exports = class Simulation {
 
         await this.init(simulationRequest);
 
-        if (complexTransaction.isDistributed) {
-            for (let i =0; i < complexTransaction.totalSubTransactions; i++) {
-                let subTransactionName = `Sub-transaction #${i}`;
-                let subTransactionType = 'custom';
-                let subTransactionId = uuid.v4().split('-')[0];
-                let subTransaction = 
-                    apmService.startTransaction(
-                        `${subTransactionName} (${subTransactionId})`,
-                        subTransactionType,
-                        { childOf:  traceparent});
-console.log(traceparent);
-                for (let j = 0; j < complexTransaction.totalSpans; j++) {
-                    let randomSpanTypeIndex = util.randomNumber(apmService.SPAN_TYPES().length);
-                    let span = subTransaction.startSpan(`Span #${i}.${j}`, apmService.SPAN_TYPES()[randomSpanTypeIndex]);
-        
-                    await delayGenerator.randomDelay(simulationRequest.maxRandomDelay);
-        
-                    span.end();
-        
-                    await delayGenerator.randomDelay(simulationRequest.maxRandomDelay);
-                }
+        for (let i =0; i < complexTransaction.totalSubTransactions; i++) {
+            let subTransactionName = `Sub-transaction #${i}`;
+            let subTransactionType = 'custom';
+            let subTransactionId = uuid.v4().split('-')[0];
+            let subTransaction = 
+                apmService.startTransaction(
+                    `${subTransactionName} (${subTransactionId})`,
+                    subTransactionType,
+                    { childOf:  traceparent});
 
-                subTransaction.end();
-            }
-        } else {
             for (let j = 0; j < complexTransaction.totalSpans; j++) {
                 let randomSpanTypeIndex = util.randomNumber(apmService.SPAN_TYPES().length);
-                let span = apmService.startSpan(`Span #${j}`, apmService.SPAN_TYPES()[randomSpanTypeIndex]);
+                let span = subTransaction.startSpan(`Span #${i}.${j}`, apmService.SPAN_TYPES()[randomSpanTypeIndex]);
     
                 await delayGenerator.randomDelay(simulationRequest.maxRandomDelay);
     
@@ -106,6 +92,22 @@ console.log(traceparent);
     
                 await delayGenerator.randomDelay(simulationRequest.maxRandomDelay);
             }
+
+            subTransaction.end();
         }
+    }
+
+    async generateDistributedTransaction(simulationRequest) {
+        const apmService = new ApmService();
+        const delayGenerator = new DelayGenerator();
+
+        await this.init(simulationRequest);
+
+        //axios.get('https://jsonplaceholder.typicode.com/users')
+        //.then(response => )
+        //.catch(error => {
+        //    console.log(error);
+        //});
+
     }
 }

@@ -8,5 +8,6 @@ router.post('/success', requestParserController.requestParser, simulationControl
 router.post('/thrown-error', requestParserController.requestParser, simulationController.generateThrownError);
 router.post('/uncaught-error', requestParserController.requestParser, simulationController.generateUncaughtError);
 router.post('/complex-transaction', requestParserController.requestParser, simulationController.generateComplexTransaction);
+router.post('/distributed-transaction', requestParserController.requestParser, simulationController.generateDistributedTransaction);
 
 module.exports = router;

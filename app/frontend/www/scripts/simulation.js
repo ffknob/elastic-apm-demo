@@ -30,10 +30,15 @@ const SIMULATION = {
         type: 'complex-transaction',
         text: 'Complex Transaction',
         classes: ['is-black'],
-        isDistributed: true,
         totalSubTransactions: 5,
         totalSpans: 5
 
+    },
+    DISTRIBUTED_TRANSACTION: {
+        type: 'distributed-transaction',
+        text: 'Distributed Transaction',
+        classes: ['is-link'],
+        isDistributed: true
     }
 };
 
@@ -58,6 +63,10 @@ function selectSimulationType(event) {
 
         case 'btn-complex-transaction':
             simulationType = SIMULATION.COMPLEX_TRANSACTION;
+            break;
+
+        case 'btn-distributed-transaction':
+            simulationType = SIMULATION.DISTRIBUTED_TRANSACTION;
             break;
     }
 
@@ -117,7 +126,6 @@ function createSimulation(simulationType) {
             setRandomLabels: setRandomLabels,
             labels: !setRandomLabels ? createLabels() : null,
             complexTransaction: {
-                isDistributed: simulationType.isDistributed,
                 totalSubTransactions: simulationType.totalSubTransactions,
                 totalSpans: simulationType.totalSpans || 0
             }

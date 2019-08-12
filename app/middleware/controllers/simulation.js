@@ -35,3 +35,12 @@ exports.generateComplexTransaction = async (req, res, next) => {
 
     res.status(200).send();
 };
+
+exports.generateDistributedTransaction = async (req, res, next) => {
+    const simulationRequest = res.locals.simulationRequest;
+    const simulation = new Simulation();
+
+    await simulation.generateDistributedTransaction(simulationRequest);
+
+    res.status(200).send();
+};

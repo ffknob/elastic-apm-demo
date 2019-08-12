@@ -55,3 +55,9 @@ rxjs.fromEvent(document.querySelector('#btn-complex-transaction'), 'click')
         event => simulate(event),
         err => console.log(err)
     );
+
+rxjs.fromEvent(document.querySelector('#btn-distributed-transaction'), 'click')
+    .subscribe(
+        event => simulate(event),
+        err => console.log(err)
+    );

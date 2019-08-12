@@ -11,7 +11,8 @@ exports.requestParser = (req, res, next) => {
         simulationSettings.customContext,
         simulationSettings.setRandomLabels,        
         simulationSettings.labels,        
-        simulationSettings.complexTransaction);
+        simulationSettings.complexTransaction,
+        simulationSettings.distributedTransaction); 
 console.log(simulationRequest);
     res.locals.simulationRequest = simulationRequest;
     next();

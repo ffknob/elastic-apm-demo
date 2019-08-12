@@ -38,7 +38,8 @@ const SIMULATION = {
         type: 'distributed-transaction',
         text: 'Distributed Transaction',
         classes: ['is-link'],
-        isDistributed: true
+        totalSubTransactions: 5,
+        totalSpans: 5
     }
 };
 
@@ -126,6 +127,10 @@ function createSimulation(simulationType) {
             setRandomLabels: setRandomLabels,
             labels: !setRandomLabels ? createLabels() : null,
             complexTransaction: {
+                totalSubTransactions: simulationType.totalSubTransactions,
+                totalSpans: simulationType.totalSpans || 0
+            },
+            distributedTransaction: {
                 totalSubTransactions: simulationType.totalSubTransactions,
                 totalSpans: simulationType.totalSpans || 0
             }

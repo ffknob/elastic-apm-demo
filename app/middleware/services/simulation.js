@@ -1,4 +1,3 @@
-const request = require('request');
 const uuid = require('uuid');
 const DelayGenerator = require('./delay-generator');
 const ErrorGenerator = require('./error-generator');
@@ -101,13 +100,20 @@ module.exports = class Simulation {
         const apmService = new ApmService();
         const delayGenerator = new DelayGenerator();
 
-        await this.init(simulationRequest);
+        const distributedTransaction = simulationRequest.distributedTransaction;
 
-        //axios.get('https://jsonplaceholder.typicode.com/users')
-        //.then(response => )
-        //.catch(error => {
-        //    console.log(error);
-        //});
+        await this.init(simulationRequest);
+       
+        for (let i = 0; i < distributedTransaction.totalSpans; i++) {
+            let randomSpanTypeIndex = util.randomNumber(apmService.SPAN_TYPES().length);
+            let span = apmService.startSpan(`Span #${i}`, apmService.SPAN_TYPES()[randomSpanTypeIndex]);
+
+            await delayGenerator.randomDelay(simulationRequest.maxRandomDelay);
+
+            span.end();
+
+            await delayGenerator.randomDelay(simulationRequest.maxRandomDelay);
+        }
 
     }
 }

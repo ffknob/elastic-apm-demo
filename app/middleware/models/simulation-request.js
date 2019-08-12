@@ -6,7 +6,8 @@ module.exports = class SimulationRequest {
                 customContext,
                 setRandomLabels,
                 labels,
-                complexTransaction) {
+                complexTransaction,
+                distributedTransaction) {
         this.maxRandomDelay = maxRandomDelay;
         this.setRandomUserContext = setRandomUserContext;
         this.userContext = userContext;
@@ -15,5 +16,6 @@ module.exports = class SimulationRequest {
         this.setRandomLabels = setRandomLabels;
         this.labels = labels;
         this.complexTransaction = complexTransaction;
+        this.distributedTransaction = distributedTransaction;
     }
 }

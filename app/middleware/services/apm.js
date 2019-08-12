@@ -6,7 +6,8 @@ module.exports = class ApmService {
     constructor() { }
 
     SPAN_TYPES() {
-        return ['app', 'db', 'cache', 'template', 'ext'];
+        //return ['app', 'db', 'cache', 'template', 'ext'];
+        return ['ext.http.http', 'db.mongodb.query'];
     }
 
     getCurrentTransaction() {

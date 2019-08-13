@@ -1,3 +1,6 @@
+const mongo = require('mongodb').MongoClient;
+const axios = require('axios');
+
 const uuid = require('uuid');
 const DelayGenerator = require('./delay-generator');
 const ErrorGenerator = require('./error-generator');
@@ -104,6 +107,35 @@ module.exports = class Simulation {
 
         await this.init(simulationRequest);
        
+        const url = 'mongodb://root:password@localhost:27017';
+        mongo.connect(url, (err, client) => {
+            if (err) {
+              console.error(err)
+              return
+            }
+
+            axios.get('https://jsonplaceholder.typicode.com/users')
+                .then(response => {
+                    const data = response.data;
+
+                    const db = client.db('apm-demo');        
+                    const usersCollection = db.collection('users');
+        
+                    usersCollection.insertMany(data, (err, result) => {
+                        if (err) {
+                            throw err;
+                        }
+
+                        usersCollection.find().toArray((err, items) => {
+                            console.log(items);
+                        })
+                    })
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+          });
+/*
         for (let i = 0; i < distributedTransaction.totalSpans; i++) {
             let randomSpanTypeIndex = util.randomNumber(apmService.SPAN_TYPES().length);
             let span = apmService.startSpan(`Span #${i}`, apmService.SPAN_TYPES()[randomSpanTypeIndex]);
@@ -114,6 +146,6 @@ module.exports = class Simulation {
 
             await delayGenerator.randomDelay(simulationRequest.maxRandomDelay);
         }
-
+*/
     }
 }

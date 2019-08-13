@@ -79,6 +79,18 @@ services:
     depends_on:
       - elasticsearch
 
+  mongo:
+    container_name: apm-demo-mongo
+    image: mongo:$MONGODB_VERSION
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: apm-demo
+    ports:
+        - "27017:27017"
+    networks:
+      - backend
+
 networks:
   frontend:
   backend:

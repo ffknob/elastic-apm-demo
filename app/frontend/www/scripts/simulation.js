@@ -1,11 +1,12 @@
-const { Subject, range, from, of, throwError } = rxjs;
-const { map, filter, timeoutWith, catchError } = rxjs.operators;
+const { Subject, range, from, of, throwError, interval } = rxjs;
+const { map, filter, timeoutWith, catchError, take } = rxjs.operators;
 
 const MIDDLEWARE = {
     host: 'localhost',
     port: 3000
 };
 
+const INTERVAL = 500;
 const MAX_RANDOM_DELAY = 50000;
 const TIMEOUT_IN = 40000;
 const TOTAL_LABELS = 5;
@@ -106,6 +107,7 @@ function createLabels() {
 
 function createSimulation(simulationType) {
     const numberOfRequests = parseInt(document.querySelector('#select-number-of-requests').value);
+    const interval = parseInt(document.querySelector('#input-interval').value) || INTERVAL;
     const maxRandomDelay = parseInt(document.querySelector('#input-max-random-delay').value) || MAX_RANDOM_DELAY;
     const timeoutIn = parseInt(document.querySelector('#input-timeout').value) || TIMEOUT_IN;
     const setRandomUserContext = document.querySelector('#input-set-random-user-context').checked;
@@ -118,6 +120,7 @@ function createSimulation(simulationType) {
         type: simulationType,
         settings: {
             numberOfRequests: numberOfRequests,
+            interval: interval,
             maxRandomDelay: maxRandomDelay,
             timeoutIn: timeoutIn,
             setRandomUserContext: setRandomUserContext,
@@ -269,12 +272,16 @@ function treatResponse(simulation, index, response, err) {
 }
 
 function startSimulation(simulation) {
+    const _interval = simulation.settings.interval;
     const timeoutIn = simulation.settings.timeoutIn;
 
     document.querySelector('#' + simulation.srcElement.id).disabled = true;
 
     simulation.requests.requests$.next(
-        range(0, simulation.requests.total)
+        interval(_interval)
+        .pipe(
+            take(simulation.requests.total)
+        )
         .subscribe(
             (index) => {
             const request = createRequest(`${simulation.type.type}-${index}`);

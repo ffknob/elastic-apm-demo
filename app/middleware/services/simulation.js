@@ -26,7 +26,7 @@ module.exports = class Simulation {
         }
     }
 
-    async init(simulationRequest) {
+    async init(simulationRequest, delay) {
         const apmService = new ApmService();
         const delayGenerator = new DelayGenerator();
 
@@ -41,7 +41,9 @@ module.exports = class Simulation {
             simulationRequest.labels.forEach(label => apmService.setLabel(label.name, label.value));
         }
 
-        await delayGenerator.randomDelay(simulationRequest.maxRandomDelay);
+        if (delay) {
+            await delayGenerator.randomDelay(simulationRequest.maxRandomDelay);
+        }
     }
 
     async generateSuccess(simulationRequest) {
@@ -72,7 +74,7 @@ module.exports = class Simulation {
         const complexTransaction = simulationRequest.complexTransaction;
         const traceparent = apmService.getCurrentTraceparent();
 
-        await this.init(simulationRequest);
+        await this.init(simulationRequest, false);
 
         for (let i =0; i < complexTransaction.totalSubTransactions; i++) {
             let subTransactionName = `Sub-transaction #${i}`;
@@ -104,48 +106,66 @@ module.exports = class Simulation {
         const delayGenerator = new DelayGenerator();
 
         const distributedTransaction = simulationRequest.distributedTransaction;
+        const currentTransaction = apmService.getCurrentTransaction();
+        const currentTraceparent = apmService.getCurrentTraceparent();
 
-        await this.init(simulationRequest);
-       
+        await this.init(simulationRequest, false);
+
+        let usersTransaction = apmService.startTransaction('MongoDB', 'db.mongodb.connect', { childOf: currentTraceparent });
+
+        let connectToMongoDbSpan = usersTransaction.startSpan('Connect to MongoDB');
+
         const url = 'mongodb://root:password@localhost:27017';
         mongo.connect(url, (err, client) => {
             if (err) {
-              console.error(err)
-              return
+                connectToMongoDbSpan.end();
+                usersTransaction.end();
+
+                console.error(err)
+                return
             }
+
+            connectToMongoDbSpan.end();
+
+            let getUsersJsonSpan = usersTransaction.startSpan('Get Users JSON');
 
             axios.get('https://jsonplaceholder.typicode.com/users')
                 .then(response => {
+                    getUsersJsonSpan.end();
+
                     const data = response.data;
+
+                    let createUsersCollectionSpan = usersTransaction.startSpan('Create Users collection');
 
                     const db = client.db('apm-demo');        
                     const usersCollection = db.collection('users');
         
+                    createUsersCollectionSpan.end();
+
+                    let insertIntoUsersCollectionSpan = usersTransaction.startSpan('Insert into Users collection');
+
                     usersCollection.insertMany(data, (err, result) => {
+                        insertIntoUsersCollectionSpan.end();
+
                         if (err) {
                             throw err;
                         }
 
+                        let findUsersSpan = usersTransaction.startSpan('Find Users', 'db.mongodb.query');
+
                         usersCollection.find().toArray((err, items) => {
-                            console.log(items);
-                        })
-                    })
+                            findUsersSpan.end();
+                            usersTransaction.end();
+
+                            console.log(`Got ${items.length} items`);
+                        });
+                    });
                 })
                 .catch(error => {
+                    usersTransaction.end();
+
                     console.log(error);
                 });
           });
-/*
-        for (let i = 0; i < distributedTransaction.totalSpans; i++) {
-            let randomSpanTypeIndex = util.randomNumber(apmService.SPAN_TYPES().length);
-            let span = apmService.startSpan(`Span #${i}`, apmService.SPAN_TYPES()[randomSpanTypeIndex]);
-
-            await delayGenerator.randomDelay(simulationRequest.maxRandomDelay);
-
-            span.end();
-
-            await delayGenerator.randomDelay(simulationRequest.maxRandomDelay);
-        }
-*/
     }
 }

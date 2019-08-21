@@ -28,6 +28,6 @@ There's also a `.env` file in which some environment variables used inside the `
 
 `docker-compose up -d`
 
-## Stoping
+## Stopping
 
 `docker-compose down`

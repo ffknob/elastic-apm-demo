@@ -52,8 +52,8 @@ module.exports = class ApmService {
     setCustomContext() {
     }
 
-    captureError(error) {
-        apm.captureError(error);
+    captureError(error, options, callback) {
+        apm.captureError(error, options, callback);
     }
 
     startTransaction(name, type, options) {

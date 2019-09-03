@@ -6,7 +6,7 @@ const simulationController = require('../controllers/simulation');
 
 router.post('/success', requestParserController.requestParser, simulationController.generateSuccess);
 router.post('/thrown-error', requestParserController.requestParser, simulationController.generateThrownError);
-router.post('/uncaught-error', requestParserController.requestParser, simulationController.generateUncaughtError);
+router.post('/captured-error', requestParserController.requestParser, simulationController.generateCapturedError);
 router.post('/complex-transaction', requestParserController.requestParser, simulationController.generateComplexTransaction);
 router.post('/distributed-transaction', requestParserController.requestParser, simulationController.generateDistributedTransaction);
 

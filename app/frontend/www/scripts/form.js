@@ -44,7 +44,7 @@ rxjs.fromEvent(document.querySelector('#btn-thrown-error'), 'click')
         err => console.log(err)
     );
 
-rxjs.fromEvent(document.querySelector('#btn-uncaught-error'), 'click')
+rxjs.fromEvent(document.querySelector('#btn-captured-error'), 'click')
     .subscribe(
         event => simulate(event),
         err => console.log(err)

@@ -6,9 +6,9 @@ const MIDDLEWARE = {
     port: 3000
 };
 
-const INTERVAL = 500;
-const MAX_RANDOM_DELAY = 50000;
-const TIMEOUT_IN = 40000;
+const INTERVAL = 1000;
+const MAX_RANDOM_DELAY = 500;
+const TIMEOUT_IN = 5000;
 const TOTAL_LABELS = 5;
 
 const SIMULATION = {
@@ -20,12 +20,12 @@ const SIMULATION = {
     THROWN_ERROR: {
         type: 'thrown-error',
         text: 'Thrown Error',
-        classes: ['is-warning']
-    },
-    UNCAUGHT_ERROR: {
-        type: 'uncaught-error',
-        text: 'Uncaught Error',
         classes: ['is-danger']
+    },
+    CAPTURED_ERROR: {
+        type: 'captured-error',
+        text: 'Captured Error',
+        classes: ['is-warning']
     },
     COMPLEX_TRANSACTION: {
         type: 'complex-transaction',
@@ -59,8 +59,8 @@ function selectSimulationType(event) {
             simulationType = SIMULATION.THROWN_ERROR;
             break;
 
-        case 'btn-uncaught-error':
-            simulationType = SIMULATION.UNCAUGHT_ERROR;
+        case 'btn-captured-error':
+            simulationType = SIMULATION.CAPTURED_ERROR;
             break;
 
         case 'btn-complex-transaction':
@@ -262,7 +262,7 @@ function treatResponse(simulation, index, response, err) {
 
     updateSimulationTookTime(simulation);
 
-    srcElement.innerText = `${simulation.requests.completed}/${simulation.requests.total}`;
+    //srcElement.innerText = `${simulation.requests.completed}/${simulation.requests.total}`;
 
     simulation.requests.requests$.next(simulation.requests.requests);
 

@@ -20,11 +20,11 @@ exports.generateThrownError = async (req, res, next) => {
     }
 };
 
-exports.generateUncaughtError = async (req, res, next) => {
+exports.generateCapturedError = async (req, res, next) => {
     const simulationRequest = res.locals.simulationRequest;
     const simulation = new Simulation();
 
-    await simulation.generateUncaughtError(simulationRequest);
+    await simulation.generateCapturedError(simulationRequest);
 };
 
 exports.generateComplexTransaction = async (req, res, next) => {

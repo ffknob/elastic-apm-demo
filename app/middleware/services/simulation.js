@@ -57,14 +57,25 @@ module.exports = class Simulation {
         throw errorGenerator.getRandomError(); 
     }
 
-    async generateUncaughtError(simulationRequest) {
+    async generateCapturedError(simulationRequest) {
         const apmService = new ApmService();
         
         await this.init(simulationRequest);
 
         const errorGenerator = new ErrorGenerator();
+        const error = errorGenerator.getRandomError();
 
-        apmService.captureError(errorGenerator.getRandomError()); 
+        apmService.captureError(
+            error,
+            { 
+                handled: false, 
+                custom: { 
+                    fake: true,
+                    category: error.category,
+                    statusCode: errorGenerator.statusCode
+                }
+            }
+        );
     }
 
     async generateComplexTransaction(simulationRequest) {

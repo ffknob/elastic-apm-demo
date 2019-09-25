@@ -1,5 +1,5 @@
 const ERRORS = [
-    { category: 'http', statusCode: 400, message: 'Bad Request' },
+    { category: 'http', statusCode: 400, message: 'Bad Request'},
     { category: 'http', statusCode: 401, message: 'Unauthorized' },
     { category: 'http', statusCode: 402, message: 'Required' },
     { category: 'http', statusCode: 403, message: 'Forbidden' },
@@ -59,17 +59,28 @@ const ERRORS = [
     { category: 'mongoose', statusCode: 500, message: 'Ran out of retries trying to reconnect to "mongodb://...". Try setting `server.reconnectTries` and `server.reconnectInterval` to something higher.' }    
 ];
 
+/*
+const ERRORS = [
+    { f: () => { const error = new Error('Bad Request'); error.category = 'http'; error.statusCode = 400; return error; } },
+    { f: () => { const error = new Error('Unauthorized'); error.category = 'http'; error.statusCode = 401; return error; } },
+    { f: () => { const error = new Error('Required'); error.category = 'http'; error.statusCode = 402; return error; } },
+    { f: () => { const error = new Error('Forbidden'); error.category = 'http'; error.statusCode = 403; return error; } },
+    { f: () => { const error = new Error('Not Found'); error.category = 'http'; error.statusCode = 404; return error; } }
+];
+*/
 module.exports = class ErrorGenerator {
     constructor() { }
 
     getRandomError(category) {
         const errors = ERRORS.filter(e => !category ? true : e.category === category);
         const randomErrorIndex = Math.floor(Math.random() * (errors.length));
+console.log(randomErrorIndex);
         const randomError = errors[randomErrorIndex];
         const error = new Error(randomError.message);
         error.category = randomError.category;
-        error.statusCode = randomError.statusCode; 
+        error.statusCode = randomError.statusCode;
 
         return error;
+        //return randomError.f();
     }
 }

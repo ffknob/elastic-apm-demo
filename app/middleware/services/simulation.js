@@ -54,7 +54,7 @@ module.exports = class Simulation {
         await this.init(simulationRequest);
 
         const errorGenerator = new ErrorGenerator();
-        throw errorGenerator.getRandomError(); 
+        throw errorGenerator.getRandomError();
     }
 
     async generateCapturedError(simulationRequest) {
@@ -68,7 +68,7 @@ module.exports = class Simulation {
         apmService.captureError(
             error,
             { 
-                handled: false, 
+                handled: false,
                 custom: { 
                     fake: true,
                     category: error.category,

@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Error from an individual schema path\'s validator.'); error.category = 'mongoose'; error.statusCode = 500; return error; } };

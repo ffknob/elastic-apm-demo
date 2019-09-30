@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Unprocessable Entity'); error.category = 'http'; error.statusCode = 422; return error; } };

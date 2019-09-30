@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Loop Detected'); error.category = 'http'; error.statusCode = 508; return error; } };

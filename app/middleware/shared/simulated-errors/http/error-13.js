@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Payload Too Large'); error.category = 'http'; error.statusCode = 413; return error; } };

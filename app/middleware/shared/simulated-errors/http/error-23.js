@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Upgrade Required'); error.category = 'http'; error.statusCode = 426; return error; } };

@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Unsupported Media Type'); error.category = 'http'; error.statusCode = 415; return error; } };

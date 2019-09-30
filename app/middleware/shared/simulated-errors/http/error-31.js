@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Service Unavailable'); error.category = 'http'; error.statusCode = 503; return error; } };

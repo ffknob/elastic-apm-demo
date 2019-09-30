@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Missing required parameter of the url: index'); error.category = 'elasticsearch-js'; error.statusCode = 500; return error; } };

@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('You attempted to `save()` an array that was modified after you loaded it with a `$elemMatch` or similar projection.'); error.category = 'mongoose'; error.statusCode = 500; return error; } };

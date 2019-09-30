@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Required'); error.category = 'http'; error.statusCode = 402; return error; } };

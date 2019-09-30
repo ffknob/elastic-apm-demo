@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Method Not Allowed'); error.category = 'http'; error.statusCode = 405; return error; } };

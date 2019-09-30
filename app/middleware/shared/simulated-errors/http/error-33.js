@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('HTTP Version Not Supported'); error.category = 'http'; error.statusCode = 505; return error; } };

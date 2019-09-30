@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Request Header Fields Too Large'); error.category = 'http'; error.statusCode = 431; return error; } };

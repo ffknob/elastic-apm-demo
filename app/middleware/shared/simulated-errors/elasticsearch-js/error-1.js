@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('The argument provided is not an array'); error.category = 'elasticsearch-js'; error.statusCode = 500; return error; } };

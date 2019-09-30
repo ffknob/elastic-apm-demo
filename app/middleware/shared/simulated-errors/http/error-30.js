@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Bad Gateway'); error.category = 'http'; error.statusCode = 502; return error; } };

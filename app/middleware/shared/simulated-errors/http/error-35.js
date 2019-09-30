@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Insufficient Storage'); error.category = 'http'; error.statusCode = 507; return error; } };

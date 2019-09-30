@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('This connection timed out in trying to reconnect to MongoDB and will not successfully reconnect to MongoDB unless you explicitly reconnect.'); error.category = 'mongoose'; error.statusCode = 500; return error; } };

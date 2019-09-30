@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Range Not Satisfiable'); error.category = 'http'; error.statusCode = 416; return error; } };

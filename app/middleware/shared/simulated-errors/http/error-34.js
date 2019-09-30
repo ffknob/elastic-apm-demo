@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Variant Also Negotiates'); error.category = 'http'; error.statusCode = 506; return error; } };

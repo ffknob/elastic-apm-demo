@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Too Early'); error.category = 'http'; error.statusCode = 425; return error; } };

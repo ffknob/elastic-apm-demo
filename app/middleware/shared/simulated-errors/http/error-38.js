@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Network Authentication Required'); error.category = 'http'; error.statusCode = 511; return error; } };

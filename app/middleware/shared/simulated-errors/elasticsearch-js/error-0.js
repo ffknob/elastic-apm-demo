@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('There are not living connections'); error.category = 'elasticsearch-js'; error.statusCode = 500; return error; } };

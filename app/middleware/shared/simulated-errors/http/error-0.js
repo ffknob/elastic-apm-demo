@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Bad Request'); error.category = 'http'; error.statusCode = 400; return error; } };

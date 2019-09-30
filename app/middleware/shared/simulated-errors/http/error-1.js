@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Unauthorized'); error.category = 'http'; error.statusCode = 401; return error; } };

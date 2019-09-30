@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Error returned from [`validate()`](api.html#document_Document-validate) or `validateSync()`. Contains zero or more `ValidatorError` instances in `.errors` property.'); error.category = 'mongoose'; error.statusCode = 500; return error; } };

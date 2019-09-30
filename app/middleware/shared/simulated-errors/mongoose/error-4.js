@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('You tried to access a model with `mongoose.model()` that was not defined.'); error.category = 'mongoose'; error.statusCode = 500; return error; } };

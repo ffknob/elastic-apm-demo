@@ -1,0 +1,1 @@
+module.exports = { generate: () => { const error = new Error('Request timed out'); error.category = 'elasticsearch-js'; error.statusCode = 500; return error; } };

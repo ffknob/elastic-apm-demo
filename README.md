@@ -10,9 +10,11 @@ This demo project is organized as a `docker-compose` configuration with the foll
 
 - _elasticsearch_: an Elasticsearch one node cluster
 - _kibana_: a Kibana installation, which depends on the _elasticsearch_ service and exposes port `5601`
+- _mongo_: a Mong DB service in which the external service will save data
 - _apm-server_: an Elastic APM server, which also depends on the _elasticsearch_ service and is responsible for receiving performance metrics and sending them to the cluster
 - _app-middleware_: a Node.js+Express application, which acts as a middleware bettwen the frontend and the backend, simulating requests workload and sending metrics to the APM server
 - _app-frontend_: a simple frontend where the user can parametrized and simulate requests to the middleware
+- _external-service_: a Node.js+Express application, which acts as an external service so we can simulate distributed trace
 
 ## Pre-requisites
 

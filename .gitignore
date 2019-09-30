@@ -1,2 +1,5 @@
 app/middleware/node_modules/*
 app/middleware/.env
+
+app/external-service/node_modules/*
+app/external-service/.env

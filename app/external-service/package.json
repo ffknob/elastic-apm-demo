@@ -1,7 +1,7 @@
 {
-  "name": "elastic-apm-demo",
+  "name": "elastic-apm-demo-external-service",
   "version": "1.0.0",
-  "description": "Elastic APM demo",
+  "description": "External service for the Elastic APM demo",
   "main": "index.js",
   "scripts": {
     "start": "node index",
@@ -22,8 +22,7 @@
     "dotenv": "^8.0.0",
     "elastic-apm-node": "^2.12.1",
     "express": "^4.17.1",
-    "fakerator": "^0.3.0",
-    "morgan": "^1.9.1",
-    "uuid": "^3.3.2"
+    "mongodb": "^3.3.0-beta2",
+    "morgan": "^1.9.1"
   }
 }

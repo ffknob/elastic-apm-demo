@@ -1,4 +1,3 @@
-const mongo = require('mongodb').MongoClient;
 const axios = require('axios');
 
 const uuid = require('uuid');
@@ -113,70 +112,12 @@ module.exports = class Simulation {
     }
 
     async generateDistributedTransaction(simulationRequest) {
-        const apmService = new ApmService();
-        const delayGenerator = new DelayGenerator();
-
-        const distributedTransaction = simulationRequest.distributedTransaction;
-        const currentTransaction = apmService.getCurrentTransaction();
-        const currentTraceparent = apmService.getCurrentTraceparent();
+        const datasets = ['users', 'todos', 'comments', 'albuns', 'photos'];
+        const randomIndex = Math.floor(Math.random() * (datasets.length));
+        const usersFetchAndSaveEndpoint = `http://external-service:3000/api/${datasets[randomIndex]}/fetch`;
 
         await this.init(simulationRequest, false);
 
-        let usersTransaction = apmService.startTransaction('MongoDB', 'db.mongodb.connect', { childOf: currentTraceparent });
-
-        let connectToMongoDbSpan = usersTransaction.startSpan('Connect to MongoDB');
-
-        const url = 'mongodb://root:password@localhost:27017';
-        mongo.connect(url, (err, client) => {
-            if (err) {
-                connectToMongoDbSpan.end();
-                usersTransaction.end();
-
-                console.error(err)
-                return
-            }
-
-            connectToMongoDbSpan.end();
-
-            let getUsersJsonSpan = usersTransaction.startSpan('Get Users JSON');
-
-            axios.get('https://jsonplaceholder.typicode.com/users')
-                .then(response => {
-                    getUsersJsonSpan.end();
-
-                    const data = response.data;
-
-                    let createUsersCollectionSpan = usersTransaction.startSpan('Create Users collection');
-
-                    const db = client.db('apm-demo');        
-                    const usersCollection = db.collection('users');
-        
-                    createUsersCollectionSpan.end();
-
-                    let insertIntoUsersCollectionSpan = usersTransaction.startSpan('Insert into Users collection');
-
-                    usersCollection.insertMany(data, (err, result) => {
-                        insertIntoUsersCollectionSpan.end();
-
-                        if (err) {
-                            throw err;
-                        }
-
-                        let findUsersSpan = usersTransaction.startSpan('Find Users', 'db.mongodb.query');
-
-                        usersCollection.find().toArray((err, items) => {
-                            findUsersSpan.end();
-                            usersTransaction.end();
-
-                            console.log(`Got ${items.length} items`);
-                        });
-                    });
-                })
-                .catch(error => {
-                    usersTransaction.end();
-
-                    console.log(error);
-                });
-          });
+        return axios.get(usersFetchAndSaveEndpoint);
     }
 }

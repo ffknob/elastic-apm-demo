@@ -19,17 +19,39 @@ services:
     networks:
       - frontend
 
-  # app-middleware:
-  #   container_name: apm-demo-app-middleware
-  #   image: app-frontend
-  #   build:
-  #     context: app/frontend/
-  #   mem_limit: 512m
-  #   ports:
-  #     - "3000:3000"
-  #   networks:
-  #     - frontend
-  #     - backend 
+  app-middleware:
+    container_name: apm-demo-app-middleware
+    image: app-middleware
+    build:
+      context: app/middleware/
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    ports:
+      - "3000:3000"          
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      - apm-server
+      - external-service      
+
+  external-service:
+    container_name: apm-demo-external-service
+    image: external-service
+    build:
+      context: app/external-service/
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    networks:
+      - backend
+      - database
+    depends_on:
+      - apm-server
+      - mongo     
 
   elasticsearch:
     container_name: apm-demo-elasticsearch
@@ -72,8 +94,6 @@ services:
         - ELASTIC_VERSION=$ELASTIC_VERSION
     volumes:
       - ./elastic/apm-server/config/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro
-    ports:
-        - "8200:8200"
     networks:
       - backend
     depends_on:
@@ -89,11 +109,12 @@ services:
     ports:
         - "27017:27017"
     networks:
-      - backend
+      - database
 
 networks:
   frontend:
   backend:
+  database:
 
 volumes:
   apm-demo-elasticsearch_data:

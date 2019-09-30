@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 require('dotenv').config();
-
+/*
 const BackgroundTask = require('./services/background-task');
 let backgroundTaskId = 1;
 setInterval(() => {
@@ -19,7 +19,7 @@ console.log(`Background task #${backgroundTaskId}`);
     backgroundTask.execute(`Background task #${backgroundTaskId}`, 'task', 5, 10000, userContext);
     backgroundTaskId += 1;
 }, 50000);
-
+*/
 const simulationRoutes = require('./routes/simulation');
 
 const app = express();

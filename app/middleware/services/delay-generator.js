@@ -7,7 +7,7 @@ module.exports = class DelayGenerator {
         const delay = util.randomNumber(maxRandomDelay);
    
         return new Promise((resolve, reject) => {
-            setTimeout(() => resolve(), delay)
+            setTimeout(() => resolve(delay), delay)
         });
     }
 }

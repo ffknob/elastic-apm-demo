@@ -25,7 +25,7 @@ module.exports = class Simulation {
         }
     }
 
-    async init(simulationRequest, delay) {
+    async init(simulationRequest, delayOnInit) {
         const apmService = new ApmService();
         const delayGenerator = new DelayGenerator();
 
@@ -40,17 +40,19 @@ module.exports = class Simulation {
             simulationRequest.labels.forEach(label => apmService.setLabel(label.name, label.value));
         }
 
-        if (delay) {
-            await delayGenerator.randomDelay(simulationRequest.maxRandomDelay);
+        if (delayOnInit) {
+            await delayGenerator
+            .randomDelay(simulationRequest.maxRandomDelay)
+            .then(delay => apmService.setLabel('random-delay', delay));
         }
     }
 
     async generateSuccess(simulationRequest) {
-        await this.init(simulationRequest);
+        await this.init(simulationRequest, true);
     }
 
     async generateThrownError(simulationRequest) {
-        await this.init(simulationRequest);
+        await this.init(simulationRequest, true);
 
         const errorGenerator = new ErrorGenerator();
         throw errorGenerator.getRandomError();
@@ -59,7 +61,7 @@ module.exports = class Simulation {
     async generateCapturedError(simulationRequest) {
         const apmService = new ApmService();
         
-        await this.init(simulationRequest);
+        await this.init(simulationRequest, true);
 
         const errorGenerator = new ErrorGenerator();
         const error = errorGenerator.getRandomError();
@@ -114,10 +116,10 @@ module.exports = class Simulation {
     async generateDistributedTransaction(simulationRequest) {
         const datasets = ['users', 'todos', 'comments', 'albuns', 'photos'];
         const randomIndex = Math.floor(Math.random() * (datasets.length));
-        const usersFetchAndSaveEndpoint = `http://external-service:3000/api/${datasets[randomIndex]}/fetch`;
+        const fetchAndSaveEndpoint = `http://external-service:3000/api/${datasets[randomIndex]}/fetch`;
 
         await this.init(simulationRequest, false);
 
-        return axios.get(usersFetchAndSaveEndpoint);
+        return await axios.get(fetchAndSaveEndpoint);
     }
 }

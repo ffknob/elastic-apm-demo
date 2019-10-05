@@ -40,6 +40,7 @@ app.use(function (req, res, next) {
 app.use('/simulation', simulationRoutes);
 
 app.use((err, req, res, next) => {
+    apm.captureError(err);
     res.status(err.statusCode  || 500).json({ error: true, message: err.message });
 });
 

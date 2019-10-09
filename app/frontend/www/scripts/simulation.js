@@ -144,7 +144,13 @@ function createSimulation(simulationType) {
                 start: null,
                 end: null,
                 took: 0,
-                took$: new Subject()
+                took$: new Subject(),
+                min: 0,
+                min$: new Subject(),
+                max: 0,
+                max$: new Subject(),
+                avg: 0,
+                avg$: new Subject()
             },
             sent: 0,
             sent$: new Subject(),
@@ -199,6 +205,9 @@ function createRequestsTableRow(simulation) {
     const requestCellTimedOut = document.createElement('td');    
     const requestCellCompleted = document.createElement('td');
     const requestCellTook = document.createElement('td');
+    const requestCellMin = document.createElement('td');
+    const requestCellMax = document.createElement('td');
+    const requestCellAvg = document.createElement('td');
 
     requestCellId.innerHTML = simulation.id;
     requestCellType.appendChild(createTypeTag(simulation.type));
@@ -213,6 +222,12 @@ function createRequestsTableRow(simulation) {
     simulation.requests.completed$.subscribe((completed) => requestCellCompleted.innerHTML = completed);
     requestCellTook.innerHTML = simulation.requests.time.took;
     simulation.requests.time.took$.subscribe((took) => requestCellTook.innerHTML = took);
+    requestCellMin.innerHTML = simulation.requests.time.min;
+    simulation.requests.time.min$.subscribe((min) => requestCellMin.innerHTML = min);
+    requestCellMax.innerHTML = simulation.requests.time.max;
+    simulation.requests.time.max$.subscribe((max) => requestCellMax.innerHTML = max);
+    requestCellAvg.innerHTML = simulation.requests.time.avg;
+    simulation.requests.time.avg$.subscribe((avg) => requestCellAvg.innerHTML = avg);
 
     requestRow.appendChild(requestCellId);
     requestRow.appendChild(requestCellType);
@@ -223,6 +238,9 @@ function createRequestsTableRow(simulation) {
     requestRow.appendChild(requestCellTimedOut);    
     requestRow.appendChild(requestCellCompleted);
     requestRow.appendChild(requestCellTook);
+    requestRow.appendChild(requestCellMin);
+    requestRow.appendChild(requestCellMax);
+    requestRow.appendChild(requestCellAvg);    
 
     requestsTableBodyNew.appendChild(requestRow)
     if (requestsTableRows.length > 0) {
@@ -234,7 +252,7 @@ function createRequestsTableRow(simulation) {
 
 function makeRequest(simulation) {
     simulation.requests.time.start = Date.now();
-    simulation.requests.time.took = 0;
+    //simulation.requests.time.took = 0;
 
     simulation.requests.sent += 1;
     simulation.requests.sent$.next(simulation.requests.sent);
@@ -260,7 +278,7 @@ function treatResponse(simulation, index, response, err) {
         simulation.requests.completed$.next(simulation.requests.completed);
     }
 
-    updateSimulationTookTime(simulation);
+    updateSimulationStats(simulation);
 
     //srcElement.innerText = `${simulation.requests.completed}/${simulation.requests.total}`;
 
@@ -299,16 +317,33 @@ function startSimulation(simulation) {
     );
 }
 
-function updateSimulationTookTime(simulation) {
+function updateSimulationStats(simulation) {
     simulation.requests.time.end = Date.now();
-    simulation.requests.time.took = simulation.requests.time.end - simulation.requests.time.start;
+    const requestTook = simulation.requests.time.end - simulation.requests.time.start;
+
+    simulation.requests.time.took += requestTook;
     simulation.requests.time.took$.next(simulation.requests.time.took);
+
+    simulation.requests.time.min =
+            simulation.requests.time.min === 0 || simulation.requests.time.min > requestTook ?
+            requestTook :
+            simulation.requests.time.min;
+    simulation.requests.time.min$.next(simulation.requests.time.min);
+
+    simulation.requests.time.max =
+    simulation.requests.time.max === 0 || simulation.requests.time.max < requestTook ?
+            requestTook :
+            simulation.requests.time.max;
+    simulation.requests.time.max$.next(simulation.requests.time.max);
+
+    simulation.requests.time.avg = Math.floor(simulation.requests.time.took/simulation.requests.sent);
+    simulation.requests.time.avg$.next(simulation.requests.time.avg);
 }
 
 function endSimulation(simulation) {
     const srcElement = document.querySelector('#' + simulation.srcElement.id);
 
-    updateSimulationTookTime(simulation);
+    updateSimulationStats(simulation);
 
     srcElement.disabled = false;
     srcElement.innerText = simulation.srcElement.innerText;

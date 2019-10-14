@@ -331,7 +331,7 @@ function updateSimulationStats(simulation) {
     simulation.requests.time.min$.next(simulation.requests.time.min);
 
     simulation.requests.time.max =
-    simulation.requests.time.max === 0 || simulation.requests.time.max < requestTook ?
+    simulation.requests.time.max === 0 || simulation.requests.time.max > requestTook ?
             requestTook :
             simulation.requests.time.max;
     simulation.requests.time.max$.next(simulation.requests.time.max);

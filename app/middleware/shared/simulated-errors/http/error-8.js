@@ -1,1 +1,0 @@
-module.exports = { generate: () => { const error = new Error('Request Timeout'); error.category = 'http'; error.statusCode = 408; return error; } };

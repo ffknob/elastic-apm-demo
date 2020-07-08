@@ -1,1 +1,0 @@
-module.exports = { generate: () => { const error = new Error('URI Too Long'); error.category = 'http'; error.statusCode = 414; return error; } };

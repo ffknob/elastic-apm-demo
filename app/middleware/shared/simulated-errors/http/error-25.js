@@ -1,1 +1,0 @@
-module.exports = { generate: () => { const error = new Error('Too Many Requests'); error.category = 'http'; error.statusCode = 429; return error; } };

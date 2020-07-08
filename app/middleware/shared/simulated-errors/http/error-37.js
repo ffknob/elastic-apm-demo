@@ -1,1 +1,0 @@
-module.exports = { generate: () => { const error = new Error('Not Extended'); error.category = 'http'; error.statusCode = 510; return error; } };

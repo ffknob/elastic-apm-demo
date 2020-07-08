@@ -1,1 +1,0 @@
-module.exports = { generate: () => { const error = new Error('Not Acceptable'); error.category = 'http'; error.statusCode = 406; return error; } };

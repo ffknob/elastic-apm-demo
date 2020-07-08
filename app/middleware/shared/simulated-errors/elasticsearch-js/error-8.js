@@ -1,1 +1,0 @@
-module.exports = { generate: () => { const error = new Error('Headers should be an object, instead got: integer'); error.category = 'elasticsearch-js'; error.statusCode = 500; return error; } };

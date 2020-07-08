@@ -9,13 +9,22 @@ services:
       args:
         - NGINX_VERSION=$NGINX_VERSION
     volumes:
+      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/log:/var/log/nginx
       - ./app/frontend/www:/usr/share/nginx/html:ro
     deploy:
       resources:
         limits:
-          memory: 512M
+          memory: 128M
+      restart_policy:
+        condition: always
     ports:
       - "80:80"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "5"
     networks:
       - frontend
 
@@ -27,14 +36,24 @@ services:
     deploy:
       resources:
         limits:
-          memory: 512M
+          memory: 128M
+      restart_policy:
+        condition: always
+    environment:
+      - ELASTIC_APM_SERVICE_NAME=elastic-apm-demo-middleware
+      - ELASTIC_APM_SERVER_URL=${ELASTIC_APM_SERVER_URL}
+      - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
     ports:
       - "3000:3000"          
     networks:
       - frontend
       - backend
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "5"
     depends_on:
-      - apm-server
       - external-service      
 
   external-service:
@@ -45,59 +64,18 @@ services:
     deploy:
       resources:
         limits:
-          memory: 512M
+          memory: 128M
+      restart_policy:
+        condition: always
+    environment:
+      - ELASTIC_APM_SERVICE_NAME=elastic-apm-demo-external-service
+      - ELASTIC_APM_SERVER_URL=${ELASTIC_APM_SERVER_URL}
+      - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
     networks:
       - backend
       - database
     depends_on:
-      - apm-server
       - mongo     
-
-  elasticsearch:
-    container_name: apm-demo-elasticsearch
-    image: elasticsearch:$ELASTIC_VERSION
-    build:
-      context: elastic/elasticsearch/
-      args:
-        - ELASTIC_VERSION=$ELASTIC_VERSION
-    volumes:
-      - ./elastic/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-      - apm-demo-elasticsearch_data:/usr/share/elasticsearch/data
-    environment:
-      ES_JAVA_OPTS: "-Xmx1g -Xms1g"
-    networks:
-      - backend 
-
-  kibana:
-    container_name: apm-demo-kibana
-    image: kibana:$ELASTIC_VERSION
-    build:
-      context: elastic/kibana/
-      args:
-        - ELASTIC_VERSION=$ELASTIC_VERSION
-    volumes:
-      - ./elastic/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
-    ports:
-      - "5601:5601"
-    networks:
-      - frontend
-      - backend
-    depends_on:
-      - elasticsearch
-
-  apm-server:
-    container_name: apm-demo-apm-server
-    image: apm-server:$ELASTIC_VERSION
-    build:
-      context: elastic/apm-server/
-      args:
-        - ELASTIC_VERSION=$ELASTIC_VERSION
-    volumes:
-      - ./elastic/apm-server/config/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro
-    networks:
-      - backend
-    depends_on:
-      - elasticsearch
 
   mongo:
     container_name: apm-demo-mongo
@@ -106,6 +84,11 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
       MONGO_INITDB_DATABASE: apm-demo
+    deploy:
+      restart_policy:
+        condition: always
+    ports:
+      - "27017:27017"          
     networks:
       - database
 
@@ -113,7 +96,3 @@ networks:
   frontend:
   backend:
   database:
-
-volumes:
-  apm-demo-elasticsearch_data:
-    name: apm-demo-elasticsearch_data

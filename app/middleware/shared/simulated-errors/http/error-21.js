@@ -1,1 +1,0 @@
-module.exports = { generate: () => { const error = new Error('Failed Dependency'); error.category = 'http'; error.statusCode = 424; return error; } };

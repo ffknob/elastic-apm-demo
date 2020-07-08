@@ -1,1 +1,0 @@
-module.exports = { generate: () => { const error = new Error('Invalid protocol: "file"'); error.category = 'elasticsearch-js'; error.statusCode = 500; return error; } };

@@ -1,1 +1,0 @@
-module.exports = { generate: () => { const error = new Error('Ran out of retries trying to reconnect to "mongodb://...". Try setting `server.reconnectTries` and `server.reconnectInterval` to something higher.'); error.category = 'mongoose'; error.statusCode = 500; return error; } };

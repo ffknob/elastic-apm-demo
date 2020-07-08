@@ -1,1 +1,0 @@
-module.exports = { generate: () => { const error = new Error('Internal Server Error'); error.category = 'http'; error.statusCode = 500; return error; } };

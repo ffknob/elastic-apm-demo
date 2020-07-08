@@ -1,1 +1,0 @@
-module.exports = { generate: () => { const error = new Error('No document found for query "foo" on model "bar"'); error.category = 'mongoose'; error.statusCode = 500; return error; } };

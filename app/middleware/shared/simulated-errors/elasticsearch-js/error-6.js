@@ -1,1 +1,0 @@
-module.exports = { generate: () => { const error = new Error('Missing required parameter: body'); error.category = 'elasticsearch-js'; error.statusCode = 500; return error; } };

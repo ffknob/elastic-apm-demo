@@ -1,1 +1,0 @@
-module.exports = { generate: () => { const error = new Error('Connection with id "1234" is already present'); error.category = 'elasticsearch-js'; error.statusCode = 500; return error; } };

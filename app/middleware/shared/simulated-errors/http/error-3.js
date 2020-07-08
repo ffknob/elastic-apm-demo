@@ -1,1 +1,0 @@
-module.exports = { generate: () => { const error = new Error('Forbidden'); error.category = 'http'; error.statusCode = 403; return error; } };

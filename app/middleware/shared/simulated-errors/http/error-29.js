@@ -1,1 +1,0 @@
-module.exports = { generate: () => { const error = new Error('Not Implemented'); error.category = 'http'; error.statusCode = 501; return error; } };

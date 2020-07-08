@@ -1,1 +1,0 @@
-module.exports = { generate: () => { const error = new Error('Unavailable For Legal Reasons'); error.category = 'http'; error.statusCode = 451; return error; } };

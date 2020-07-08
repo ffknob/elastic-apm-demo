@@ -1,1 +1,0 @@
-module.exports = { generate: () => { const error = new Error('Locked'); error.category = 'http'; error.statusCode = 423; return error; } };

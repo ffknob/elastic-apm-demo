@@ -1,35 +1,47 @@
-# An Elastic APM demo
+# Elastic APM Demo
 
-The main goal of this demo project is to easily bring up a stack with backend, middleware and frontend that allows to take a look at some of the core features of Elastic APM.
+O principal objetivo deste projeto é demonstrar funcionalidades do Elastic APM. Para isso foi desenvolvida uma arquitetura simples, com alguns serviços de backend, uma camada de middleware e um frontend, que permite a demonstração do Elastic APM.
 
-Elastic APM is Elastic's solution for gathering applications' performance metrics in order to give developers a way to observe their applications for common points of failures and performance bottlenecks.
+O Elastic APM é a solução da Elastic para coleta de métricas de performance de aplicações permitindo aos desenvolvedores observarem suas aplicações assim como pontos comuns de falha e gargalos.
 
-## Overview
 
-This demo project is organized as a `docker-compose` configuration with the following five services:
+## Visão geral
 
-- _elasticsearch_: an Elasticsearch one node cluster
-- _kibana_: a Kibana installation, which depends on the _elasticsearch_ service and exposes port `5601`
-- _mongo_: a Mong DB service in which the external service will save data
-- _apm-server_: an Elastic APM server, which also depends on the _elasticsearch_ service and is responsible for receiving performance metrics and sending them to the cluster
-- _app-middleware_: a Node.js+Express application, which acts as a middleware bettwen the frontend and the backend, simulating requests workload and sending metrics to the APM server
-- _app-frontend_: a simple frontend where the user can parametrized and simulate requests to the middleware
-- _external-service_: a Node.js+Express application, which acts as an external service so we can simulate distributed trace
+A arquitetura deste projeto de demonstração é organizada em um `docker-compose` contendo os seguintes serviços:
 
-## Pre-requisites
+- _mongo_: um serviço Mongo DB no qual o serviço externo irá salvar dados
+- _app-middleware_: uma aplicação NOde.js_Express que faz o papel de middleware entre o backend e o frontend simulando requisições e enviando métricas para o servidor APM
+- _app-frontend_: um frontend simples através do qual o usuário pode parametrizar e enviar requisições para a middleware
+- _external-service_: uma aplicação Node.js+Express que faz o papel de serviço externo para que seja possível demonstrar um trace distribuído
 
-You should have `docker` and `docker-compose` installed in you machine in order to use this project. Refer to Docker's official documentation in order to find out how you can install them in your system.
+## Pré-requisitos
 
-## Configuration
+É necessário ter instalados `docker` e  `docker-compose` para levantar a arquitetura deste projeto. Verifique na [https://docs.docker.com/get-docker/](documentação do Docker) como instalá-los. 
 
-For each of Elastic's product used in this demo project there is a folder in `./config` containing the respective configuration file. If you need to change any parameter for one of theses products, change the file and restart the container.
+## Configuração
 
-There's also a `.env` file in which some environment variables used inside the `docker-compose.yml` and `Dockerfile`'s are set. If you change any of these variables you'll need to rebuild the containers (I guess `docker-compose up -d` automatically does that for you).
+Antes de levantar a arquitetura é necessário informar alguns parâmetros gerais de configuração. No diretório raiz do projeto deve ser criado um arquivo `.env` que deverá conter os seguintes parâmetros (alguns já com valores de exemplo): 
 
-## Running
+```
+ELASTIC_VERSION=7.6.2
+ELASTIC_APM_SERVICE_NAME=elastic-apm-demo
+ELASTIC_APM_EXTERNAL_SERVICE_NAME=elastic-apm-demo-external-service
+ELASTIC_APM_SERVER_URL=<Url do APM obtida na Elastic Cloud>
+ELASTIC_APM_SECRET_TOKEN=<Token do APM obtido na Elastic Cloud>
+MIDDLEWARE_PORT=3000
+EXTERNAL_SERVICE_PORT=3001
+NGINX_VERSION=1.17.1-alpine
+MONGODB_VERSION=3.4
+```
+
+## Levantando os serviços
 
 `docker-compose up -d`
 
-## Stopping
+## Interrompendo os seviços
 
 `docker-compose down`
+
+## Logs
+
+`docker-compose logs -f`

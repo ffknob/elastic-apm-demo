@@ -1,1 +1,0 @@
-module.exports = { generate: () => { const error = new Error('Precondition Failed'); error.category = 'http'; error.statusCode = 412; return error; } };

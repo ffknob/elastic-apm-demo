@@ -1,1 +1,0 @@
-module.exports = { generate: () => { const error = new Error('Expectation Failed'); error.category = 'http'; error.statusCode = 417; return error; } };

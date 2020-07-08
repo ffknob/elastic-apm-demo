@@ -1,5 +1,5 @@
 const apm = require('elastic-apm-node').start({
-    serviceName: process.env.ELASTIC_APM_SERVICE_NAME || 'elastic-apm-demo-external-service',
+    serviceName: process.env.ELASTIC_APM_EXTERNAL_SERVICE_NAME || 'elastic-apm-demo-external-service',
     serverUrl: process.env.ELASTIC_APM_SERVER_URL || 'http://apm-server:8200'
 });
 
@@ -33,6 +33,6 @@ app.use((err, req, res, next) => {
     res.status(err.statusCode  || 500).json({ error: true, message: err.message });
 });
 
-const PORT = process.env.PORT || 3001;
+const EXTERNAL_SERVICE_PORT = process.env.EXTERNAL_SERVICE_PORT || 3001;
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(EXTERNAL_SERVICE_PORT, () => console.log(`Server running on port ${EXTERNAL_SERVICE_PORT}`));

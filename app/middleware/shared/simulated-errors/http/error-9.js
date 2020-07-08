@@ -1,1 +1,0 @@
-module.exports = { generate: () => { const error = new Error('Conflict'); error.category = 'http'; error.statusCode = 409; return error; } };

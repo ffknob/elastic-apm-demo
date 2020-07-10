@@ -97,6 +97,7 @@ interface SimulationStatsAggregatedData {
 
 interface SimulationStatsAggregatedAttributes {
     name: string;
+    color: string;
     order?: number;
 }
 
@@ -127,6 +128,7 @@ const SIMULATION_STATS_AGGREGATED_TOTALS_DEFAULTS: SimulationStatsAggregatedTota
 const SIMULATION_TYPES_STATS_AGGREGATED: SimulationTypesStatsAggregated = {
     success: {
         name: 'Success',
+        color: '#017D73', //'secondary',
         order: 10,
         data: [],
         timeSeries: [],
@@ -134,6 +136,7 @@ const SIMULATION_TYPES_STATS_AGGREGATED: SimulationTypesStatsAggregated = {
     },
     'thrown-error': {
         name: 'Thrown Error',
+        color: '#BD271E', //'danger'
         order: 20,
         data: [],
         timeSeries: [],
@@ -141,6 +144,7 @@ const SIMULATION_TYPES_STATS_AGGREGATED: SimulationTypesStatsAggregated = {
     },
     'captured-error': {
         name: 'Captured Error',
+        color: '#F5A700', //'warning'
         order: 30,
         data: [],
         timeSeries: [],
@@ -148,6 +152,7 @@ const SIMULATION_TYPES_STATS_AGGREGATED: SimulationTypesStatsAggregated = {
     },
     'complex-transaction': {
         name: 'Complex Transaction',
+        color: '#000000', //'text'
         order: 40,
         data: [],
         timeSeries: [],
@@ -155,6 +160,7 @@ const SIMULATION_TYPES_STATS_AGGREGATED: SimulationTypesStatsAggregated = {
     },
     'distributed-transaction': {
         name: 'Distributed Transaction',
+        color: '#006BB4', //'primary'
         order: 50,
         data: [],
         timeSeries: [],
@@ -430,6 +436,7 @@ const SimulationStats: React.FC<SimulationStatsProps> = (
                             metricTimeSeries[t.simulationType] = {
                                 id: k,
                                 name: simulationTypesStatsAggregated[k].name,
+                                color: simulationTypesStatsAggregated[k].color,
                                 data: [[t.date.getTime(), value]]
                             };
                         } else {

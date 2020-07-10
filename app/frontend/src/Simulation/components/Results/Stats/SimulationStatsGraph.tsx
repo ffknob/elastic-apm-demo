@@ -12,11 +12,14 @@ import {
 export interface SimulationStatsGraphSeries {
     id: string;
     name: string;
+    color: string;
     data: Array<[number, number]>;
 }
 
 export interface SimulationStatsGraphProps {
-    simulationStatsGraphSeries: { [serie: string]: SimulationStatsGraphSeries };
+    simulationStatsGraphSeries: {
+        [series: string]: SimulationStatsGraphSeries;
+    };
 }
 
 const SimulationStatsGraph: React.FC<SimulationStatsGraphProps> = (
@@ -26,8 +29,7 @@ const SimulationStatsGraph: React.FC<SimulationStatsGraphProps> = (
 
     return (
         <Chart size={{ height: 200 }}>
-            <Settings showLegend={true} legendPosition="bottom" />
-
+            <Settings showLegend legendPosition="bottom" />
             <Axis
                 title={new Date().toISOString()}
                 id="bottom-axis"
@@ -46,6 +48,7 @@ const SimulationStatsGraph: React.FC<SimulationStatsGraphProps> = (
                     xScaleType="time"
                     xAccessor={0}
                     yAccessors={[1]}
+                    color={simulationStatsGraphSeries[k].color}
                 />
             ))}
         </Chart>

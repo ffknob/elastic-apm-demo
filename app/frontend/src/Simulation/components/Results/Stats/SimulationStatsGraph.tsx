@@ -27,6 +27,7 @@ const SimulationStatsGraph: React.FC<SimulationStatsGraphProps> = (
 ) => {
     const { simulationStatsGraphSeries } = props;
 
+    console.log(simulationStatsGraphSeries);
     return (
         <Chart size={{ height: 200 }}>
             <Settings showLegend legendPosition="bottom" />

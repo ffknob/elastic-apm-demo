@@ -347,7 +347,17 @@ const SimulationStats: React.FC<SimulationStatsProps> = (
                 date: new Date(),
                 simulationType: simulationType,
                 total: simulationTypeStatsAggregated.totals!.total!,
-                requests: requests
+                requests: {
+                    total,
+                    sent,
+                    completed,
+                    timedOut,
+                    time: {
+                        avg,
+                        min,
+                        max
+                    }
+                }
             };
 
             simulationTypeStatsAggregated.timeSeries.push(timeSeries);
@@ -440,9 +450,10 @@ const SimulationStats: React.FC<SimulationStatsProps> = (
                                 data: [[t.date.getTime(), value]]
                             };
                         } else {
+                            const time = t.date.getTime();
                             metricTimeSeries[t.simulationType].data = [
                                 ...metricTimeSeries[t.simulationType].data,
-                                [t.date.getTime(), value]
+                                [time, value]
                             ];
                         }
                     }

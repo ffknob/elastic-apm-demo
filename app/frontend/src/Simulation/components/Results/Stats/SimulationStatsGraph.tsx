@@ -8,6 +8,7 @@ import {
     niceTimeFormatByDay,
     timeFormatter
 } from '@elastic/charts';
+import '@elastic/charts/dist/theme_light.css';
 
 export interface SimulationStatsGraphSeries {
     id: string;
@@ -27,7 +28,6 @@ const SimulationStatsGraph: React.FC<SimulationStatsGraphProps> = (
 ) => {
     const { simulationStatsGraphSeries } = props;
 
-    console.log(simulationStatsGraphSeries);
     return (
         <Chart size={{ height: 200 }}>
             <Settings showLegend legendPosition="bottom" />

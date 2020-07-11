@@ -9,16 +9,20 @@ import {
     EuiCollapsibleNavGroup,
     EuiFlexItem,
     EuiIcon,
-    EuiButtonEmpty,
     EuiListGroup,
     EuiListGroupItem,
     EuiListGroupItemProps,
     EuiShowFor
 } from '@elastic/eui';
-import '@elastic/charts/dist/theme_light.css';
 
 import AuthContext from '../../context/AuthContext';
 import IAuthContext from '../../interfaces/AuthContext';
+
+import { UserAccountButton } from '../../ui';
+import {
+    LoggedInPopoverContent,
+    NotLoggedInPopoverContent
+} from '../../../Auth';
 
 import config from '../../config/Config';
 
@@ -212,9 +216,12 @@ const Header: React.FC = props => {
                 },
                 {
                     items: [
-                        <EuiButtonEmpty
-                            iconType="user"
-                            onClick={() => console.log('a')}></EuiButtonEmpty>
+                        <UserAccountButton
+                            loggedInPopoverContent={<LoggedInPopoverContent />}
+                            notLoggedInPopoverContent={
+                                <NotLoggedInPopoverContent />
+                            }
+                        />
                     ]
                 }
             ]}

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 
-import { Page } from '../../shared/components/Page';
+import { Page } from '../../shared/layout/Page';
 
 import SimulationContext from '../../shared/context/SimulationContext';
 
@@ -19,10 +19,11 @@ import SimulationType from '../../shared/types/SimulationType';
 
 import { executeSimulation } from '../../shared/services/simulation/simulation';
 
-import './Simulation.scss';
 import SimulationRequestError from '../../shared/interfaces/SimulationRequestError';
 import BackendSuccess from '../../shared/interfaces/BackendSuccess';
 import BackendError from '../../shared/interfaces/BackendError';
+
+import './Simulation.scss';
 
 const Simulation: React.FC = () => {
     const [simulations, setSimulations] = useState<ISimulation[]>([]);

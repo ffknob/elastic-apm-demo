@@ -10,7 +10,7 @@ import Request from '../../interfaces/Request';
 
 import SimulationType from '../../types/SimulationType';
 
-import { simulate } from '../api/SimulationApi';
+import { simulate } from '../api';
 import SimulationRequestError from '../../interfaces/SimulationRequestError';
 import BackendSuccess from '../../interfaces/BackendSuccess';
 import BackendError from '../../interfaces/BackendError';

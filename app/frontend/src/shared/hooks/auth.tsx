@@ -7,15 +7,15 @@ import BackendError from '../interfaces/BackendError';
 import AuthContext from '../context/AuthContext';
 import IAuthContext from '../interfaces/AuthContext';
 
-import AuthApi from '../services/api/AuthApi';
+import { AuthApi } from '../services/api';
 
 const useAuth = (setIsLoading: Function) => {
     const authContext: IAuthContext = useContext(AuthContext);
 
     const [user, setUser] = useState<User | null>(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isSignedIn, setIsSignedIn] = useState(false);
 
-    if (!user && !isLoggedIn) {
+    if (!user && !isSignedIn) {
         const userLocalStorage: string | null = localStorage.getItem('user');
 
         if (userLocalStorage) {
@@ -28,10 +28,10 @@ const useAuth = (setIsLoading: Function) => {
                 userStored = JSON.parse(userLocalStorage);
 
                 setUser(userStored);
-                setIsLoggedIn(true);
+                setIsSignedIn(true);
 
                 authContext.setUser(userStored);
-                authContext.setIsLoggedIn(true);
+                authContext.setIsSignedIn(true);
             } else {
                 console.log('Removing stored user');
                 localStorage.removeItem('user');
@@ -45,20 +45,20 @@ const useAuth = (setIsLoading: Function) => {
         }
     }, [user]);
 
-    const login = useCallback(
+    const signIn = useCallback(
         (loginInfo: LoginInfo): Promise<User> => {
             return new Promise<User>((resolve, reject) => {
                 setIsLoading(true);
 
-                AuthApi.login(loginInfo)
+                AuthApi.signIn(loginInfo)
                     .then((user: User) => {
                         setIsLoading(false);
 
                         if (user) {
-                            setIsLoggedIn(true);
+                            setIsSignedIn(true);
                             setUser(user);
                             authContext.setUser(user);
-                            authContext.setIsLoggedIn(true);
+                            authContext.setIsSignedIn(true);
                         }
 
                         resolve(user);
@@ -73,21 +73,21 @@ const useAuth = (setIsLoading: Function) => {
         [authContext, setIsLoading]
     );
 
-    const logout = useCallback((): Promise<User> => {
+    const signOut = useCallback((): Promise<User> => {
         return new Promise<User>((resolve, reject) => {
             setIsLoading(true);
 
             if (user && user.token) {
-                AuthApi.logout(user)
+                AuthApi.signOut(user)
                     .then((user: User) => {
                         setIsLoading(false);
 
                         if (user) {
                             localStorage.removeItem('user');
 
-                            setIsLoggedIn(false);
+                            setIsSignedIn(false);
                             setUser(null);
-                            authContext.setIsLoggedIn(false);
+                            authContext.setIsSignedIn(false);
                             authContext.setUser(null);
                         }
 
@@ -105,7 +105,7 @@ const useAuth = (setIsLoading: Function) => {
         });
     }, [authContext, setIsLoading, user]);
 
-    return { user, setUser, isLoggedIn, setIsLoggedIn, login, logout };
+    return { user, setUser, isSignedIn, setIsSignedIn, signIn, signOut };
 };
 
 export default useAuth;

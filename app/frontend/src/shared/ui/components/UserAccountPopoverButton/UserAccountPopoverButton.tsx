@@ -5,24 +5,29 @@ import { EuiButtonEmpty, EuiPopover } from '@elastic/eui';
 import { useAuth } from '../../../hooks';
 import { useLoading } from '../../../hooks';
 
-import './UserAccountButton.scss';
+import './UserAccountPopoverButton.scss';
 
-export interface UserAccountButtonProps {
-    loggedInPopoverContent: React.ReactNode;
-    notLoggedInPopoverContent: React.ReactNode;
+export interface UserAccountPopoverButtonProps {
+    signedInPopoverContent: React.ReactNode;
+    notSignedInPopoverContent: React.ReactNode;
 }
 
-const UserAccountButton: React.FC<UserAccountButtonProps> = (
-    props: UserAccountButtonProps
+const UserAccountPopoverButton: React.FC<UserAccountPopoverButtonProps> = (
+    props: UserAccountPopoverButtonProps
 ) => {
-    const { loggedInPopoverContent, notLoggedInPopoverContent } = props;
+    const { signedInPopoverContent, notSignedInPopoverContent } = props;
 
     const { isLoading, loading } = useLoading();
     const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
 
-    const { user, setUser, isLoggedIn, setIsLoggedIn, login, logout } = useAuth(
-        loading
-    );
+    const {
+        user,
+        setUser,
+        isSignedIn,
+        setIsSignedIn,
+        signIn,
+        signOut
+    } = useAuth(loading);
 
     const button = (
         <EuiButtonEmpty
@@ -37,9 +42,9 @@ const UserAccountButton: React.FC<UserAccountButtonProps> = (
             isOpen={isPopoverOpen}
             closePopover={() => setIsPopoverOpen(false)}
             anchorPosition="downRight">
-            {isLoggedIn ? loggedInPopoverContent : notLoggedInPopoverContent}
+            {isSignedIn ? signedInPopoverContent : notSignedInPopoverContent}
         </EuiPopover>
     );
 };
 
-export default UserAccountButton;
+export default UserAccountPopoverButton;

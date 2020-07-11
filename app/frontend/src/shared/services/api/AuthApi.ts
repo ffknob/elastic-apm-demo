@@ -6,8 +6,8 @@ import LoginInfo from '../../interfaces/LoginInfo';
 import LoginResult from '../../interfaces/LoginResult';
 import LogoutResult from '../../interfaces/LogoutResult';
 
-export const login = (loginInfo: LoginInfo): Promise<User> => {
-    const endpoint = '/users/login';
+export const signIn = (loginInfo: LoginInfo): Promise<User> => {
+    const endpoint = '/users/signin';
     return new Promise<User>((resolve, reject) => resolve());
     /*
   return Api.post<BackendResponse<LoginResult>>(endpoint, loginInfo)
@@ -26,8 +26,8 @@ export const login = (loginInfo: LoginInfo): Promise<User> => {
     */
 };
 
-export const logout = (user: User): Promise<User> => {
-    const endpoint = '/users/logout';
+export const signOut = (user: User): Promise<User> => {
+    const endpoint = '/users/signout';
     return new Promise<User>((resolve, reject) => resolve());
     /*
   return Api.post<BackendResponse<LogoutResult>>(endpoint, null, {
@@ -40,4 +40,4 @@ export const logout = (user: User): Promise<User> => {
     */
 };
 
-export default { login, logout };
+export default { signIn, signOut };

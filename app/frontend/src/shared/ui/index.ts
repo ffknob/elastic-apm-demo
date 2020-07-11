@@ -1,1 +1,1 @@
-export { default as UserAccountButton } from './components/UserAccountButton/UserAccountButton';
+export { default as UserAccountPopoverButton } from './components/UserAccountPopoverButton/UserAccountPopoverButton';

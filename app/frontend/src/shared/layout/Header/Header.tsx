@@ -18,10 +18,10 @@ import {
 import AuthContext from '../../context/AuthContext';
 import IAuthContext from '../../interfaces/AuthContext';
 
-import { UserAccountButton } from '../../ui';
+import { UserAccountPopoverButton } from '../../ui';
 import {
-    LoggedInPopoverContent,
-    NotLoggedInPopoverContent
+    SignedInPopoverContent,
+    NotSignedInPopoverContent
 } from '../../../Auth';
 
 import config from '../../config/Config';
@@ -216,10 +216,10 @@ const Header: React.FC = props => {
                 },
                 {
                     items: [
-                        <UserAccountButton
-                            loggedInPopoverContent={<LoggedInPopoverContent />}
-                            notLoggedInPopoverContent={
-                                <NotLoggedInPopoverContent />
+                        <UserAccountPopoverButton
+                            signedInPopoverContent={<SignedInPopoverContent />}
+                            notSignedInPopoverContent={
+                                <NotSignedInPopoverContent />
                             }
                         />
                     ]

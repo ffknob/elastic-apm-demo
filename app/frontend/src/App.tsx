@@ -25,9 +25,14 @@ import './App.scss';
 
 const App: React.FC = () => {
     const { isLoading, loading } = useLoading();
-    const { user, setUser, isLoggedIn, setIsLoggedIn, login, logout } = useAuth(
-        loading
-    );
+    const {
+        user,
+        setUser,
+        isSignedIn,
+        setIsSignedIn,
+        signIn,
+        signOut
+    } = useAuth(loading);
 
     return (
         <React.Fragment>
@@ -39,11 +44,11 @@ const App: React.FC = () => {
                 <AuthContext.Provider
                     value={{
                         user,
-                        isLoggedIn,
+                        isSignedIn,
                         setUser,
-                        setIsLoggedIn,
-                        login,
-                        logout
+                        setIsSignedIn,
+                        signIn,
+                        signOut
                     }}>
                     <Router>
                         <EuiFlexGroup direction="column">
